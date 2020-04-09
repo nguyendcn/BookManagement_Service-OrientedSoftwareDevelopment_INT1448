@@ -14,7 +14,7 @@ namespace INT1448.EntityFramework.EntityFramework.Repositories
     }
     public class PublisherRepository : RepositoryBase<Publisher>, IPublisherRepository 
     {
-        public PublisherRepository(DbFactory dbFactory)
+        public PublisherRepository(IDbFactory dbFactory)
             : base(dbFactory)
         {
 

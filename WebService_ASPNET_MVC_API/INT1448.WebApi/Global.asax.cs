@@ -7,6 +7,7 @@ using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.Http;
+using INT1448.WebApi.App_Start;
 
 namespace INT1448.WebApi
 {
@@ -17,7 +18,8 @@ namespace INT1448.WebApi
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);            
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            IocConfigtion.Configure();
         }
     }
 }
