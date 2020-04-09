@@ -1,6 +1,6 @@
 ﻿namespace INT1448.EntityFramework.Migrations
 {
-    using INT1448.Core;
+    using INT1448.Core.Models;
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;

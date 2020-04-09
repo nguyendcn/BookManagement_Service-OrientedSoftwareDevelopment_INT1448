@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using INT1448.Application.IServices;
-using INT1448.Core;
+using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
 
 namespace INT1448.Application.Services

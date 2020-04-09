@@ -51,17 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Author.cs" />
-    <Compile Include="Book.cs" />
-    <Compile Include="BookAuthor.cs" />
-    <Compile Include="BookCategory.cs" />
+    <Compile Include="Models\Author.cs" />
+    <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\BookAuthor.cs" />
+    <Compile Include="Models\BookCategory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Publisher.cs" />
+    <Compile Include="Models\Publisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

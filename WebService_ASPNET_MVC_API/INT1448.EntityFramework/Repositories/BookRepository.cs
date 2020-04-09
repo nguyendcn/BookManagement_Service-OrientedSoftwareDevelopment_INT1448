@@ -1,4 +1,4 @@
-﻿using INT1448.Core;
+﻿using INT1448.Core.Models;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
 using System;
 using System.Collections.Generic;

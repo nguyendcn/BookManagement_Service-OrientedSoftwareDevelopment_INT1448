@@ -2,10 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace INT1448.Core
+namespace INT1448.Core.Models
 {
-    [Table("BookCategories")]
-    public class BookCategory
+    [Table("Authors")]
+    public class Author
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,18 +14,13 @@ namespace INT1448.Core
         [Required]
         [Column(TypeName = "NVARCHAR")]
         [MaxLength(256)]
-        public string Name { set; get; }
-
-        [Required]
-        [Column(TypeName = "VARCHAR")]
-        [MaxLength(256)]
-        public string Alias { set; get; }
+        public string FullName { set; get; }
 
         [Required]
         [Column(TypeName = "NVARCHAR")]
         [MaxLength(500)]
-        public string Description { set; get; }
+        public string Address { set; get; }
 
-        public virtual IEnumerable<Book> Books { set; get; }
+        public virtual IEnumerable<BookAuthor> BookAuthors { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using INT1448.Core;
+using INT1448.Core.Models;
 
 namespace INT1448.EntityFramework
 {
