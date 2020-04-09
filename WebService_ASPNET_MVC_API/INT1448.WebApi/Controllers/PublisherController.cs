@@ -1,18 +1,19 @@
-﻿using INT1448.Application.IServices;
+﻿using INT1448.Application.Infrastructure.Core;
+using INT1448.Application.IServices;
+using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
 using System.Web.Mvc;
 
 
 namespace INT1448.WebApi.Controllers
 {
-    [System.Web.Http.Route("api/publisher")]
-    public class PublisherController : ApiController
+    [RoutePrefix("apis/publisher")]
+    public class PublisherController : ApiControllerBase
     {
         private IPublisherService _publisherService;
 
@@ -21,15 +22,25 @@ namespace INT1448.WebApi.Controllers
             _publisherService = publisherService;
         }
 
-        [System.Web.Mvc.HttpGet]
-        public async Task<IHttpActionResult> Get()
+        [Route("getall")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetAll(HttpRequestMessage requestMessage)
         {
-            var publishers = await _publisherService.GetAll();
-            if (publishers == null)
-            {
-                return NotFound();
-            }
-            return Ok(publishers);
+            Func<Task<HttpResponseMessage>> HandleRequest = async () => {
+                HttpResponseMessage response = null;
+                if (!ModelState.IsValid)
+                {
+                    response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+                else
+                {
+                    IEnumerable<Publisher> publishers = await _publisherService.GetAll();
+                    response = requestMessage.CreateResponse(HttpStatusCode.OK, publishers);
+                }
+                return response;
+            };
+
+            return await CreateHttpResponseAsync(requestMessage, HandleRequest);
         }
     }
 }
