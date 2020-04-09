@@ -8,6 +8,6 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
 {
     public interface IUnitOfWork
     {
-        void Commit();
+        Task<int> Commit();
     }
 }

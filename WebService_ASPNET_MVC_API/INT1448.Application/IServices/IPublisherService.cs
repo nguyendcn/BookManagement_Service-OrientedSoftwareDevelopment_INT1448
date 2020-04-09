@@ -10,23 +10,35 @@ namespace INT1448.Application.IServices
 {
     public interface IPublisherService
     {
-        Publisher Add(Publisher publisher);
+        Task<Publisher> Add(Publisher publisher);
 
-        void Update(Publisher publisher);
+        Task Update(Publisher publisher);
 
-        Publisher Delete(int id);
+        Task<Publisher> Delete(int id);
 
-        Publisher Delete(Publisher publisher);
+        Task<Publisher> Delete(Publisher publisher);
 
-        Publisher GetById(int id);
+        Task<Publisher> GetById(int id);
 
-        IEnumerable<Publisher> GetAll();
+        Task<IEnumerable<Publisher>> GetAll();
 
-        IEnumerable<Publisher> GetAll(string keyword);
+        Task<IEnumerable<Publisher>> GetAll(string keyword);
 
-        IEnumerable<Publisher> Search(string keyword, int page, int pageSize, ESortMode sort, out int totalRow);
+        /// <summary>
+        /// Search records by keyword.
+        /// </summary>
+        /// <param name="keyword">Keyword to searching.</param>
+        /// <param name="page">Page want to take.</param>
+        /// <param name="pageSize">Quantity records per page.</param>
+        /// <param name="sort">Mode to sort.</param>
+        /// <returns>
+        ///  Just have twos items
+        ///  First index: All records match with keyword and pagging
+        ///  Last index: Total record without pagging 
+        ///  </returns>
+        Task<object[]> Search(string keyword, int page, int pageSize, ESortMode sort);
 
-        void SaveToDb();
+        Task SaveToDb();
 
     }
 }

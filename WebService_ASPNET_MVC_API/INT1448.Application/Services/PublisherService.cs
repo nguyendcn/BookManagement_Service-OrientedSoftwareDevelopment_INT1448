@@ -22,72 +22,81 @@ namespace INT1448.Application.Services
             this._unitOfWork = unitOfWork;
         }
 
-        public Publisher Add(Publisher publisher)
+        public async Task<Publisher> Add(Publisher publisher)
         {
-            return _publisherRepository.Add(publisher);
+            return await _publisherRepository.AddAsync(publisher);
         }
 
-        public Publisher Delete(int id)
+        public async Task<Publisher> Delete(int id)
         {
-            return _publisherRepository.Delete(id);
+            return await _publisherRepository.DeleteAsync(id);
         }
 
-        public Publisher Delete(Publisher publisher)
+        public async Task<Publisher> Delete(Publisher publisher)
         {
-            return _publisherRepository.Delete(publisher);
+            return await _publisherRepository.DeleteAsync(publisher);
         }
 
-        public IEnumerable<Publisher> GetAll()
+        public async Task<IEnumerable<Publisher>> GetAll()
         {
-            return _publisherRepository.GetAll();
+            return await _publisherRepository.GetAllAsync();
         }
 
-        public IEnumerable<Publisher> GetAll(string keyword)
+        public async Task<IEnumerable<Publisher>> GetAll(string keyword)
         {
             if (!String.IsNullOrEmpty(keyword))
             {
-                return _publisherRepository.GetMulti(item => ( item.Name.Contains(keyword)));
+                return await _publisherRepository.GetMultiAsync(item => ( item.Name.Contains(keyword)));
             }
             else
             {
-                return _publisherRepository.GetAll();
+                return await _publisherRepository.GetAllAsync();
             }
         }
 
-        public Publisher GetById(int id)
+        public Task<Publisher> GetById(int id)
         {
-            return _publisherRepository.GetSingleById(id);
+            return _publisherRepository.GetSingleByIdAsync(id);
         }
 
-        public void SaveToDb()
+        public Task SaveToDb()
         {
-            _unitOfWork.Commit();
+            return _unitOfWork.Commit();
         }
 
-        public IEnumerable<Publisher> Search(
-            string keyword, int page, int pageSize, ESortMode sort, out int totalRow)
+        public async Task DelAll()
         {
-            var searchResult = GetAll(keyword);
-
-            totalRow = searchResult.Count();
-            
-            switch (sort)
-            {
-                case ESortMode.DESC:
-                    return searchResult.OrderByDescending(item => item.ID).Skip(page * pageSize).Take(pageSize);
-                    break;
-                case ESortMode.ASC:
-                    return searchResult.OrderByDescending(item => item.ID).Skip(page * pageSize).Take(pageSize);
-                    break;
-                default:
-                    return searchResult.OrderByDescending(item => item.ID).Skip(page * pageSize).Take(pageSize);
-                    break;
-            }
+            await _publisherRepository.DeleteMultiAsync(x=>x.ID == 1);
         }
 
-        public void Update(Publisher publisher)
+        public async Task<object[]> Search(
+            string keyword, int page, int pageSize, ESortMode sort)
         {
-            _publisherRepository.Update(publisher);
+            var searchResult = await GetAll(keyword);
+
+            int totalRow =  searchResult.Count();
+
+            Func<object[]> SortAsync = () => {
+                switch (sort)
+                {
+                    case ESortMode.DESC:
+                        return new object[] { searchResult.OrderByDescending(item => item.ID).Skip(page * pageSize).Take(pageSize), totalRow };
+                        break;
+                    case ESortMode.ASC:
+                        return new object[] { searchResult.OrderByDescending(item => item.ID).Skip(page * pageSize).Take(pageSize), totalRow };
+                        break;
+                    default:
+                        return new object[] { searchResult.OrderByDescending(item => item.ID).Skip(page * pageSize).Take(pageSize), totalRow };
+                        break;
+                }
+            };
+
+            return await Task.Run(() => SortAsync());
+        }
+
+        public async Task Update(Publisher publisher)
+        {
+            await _publisherRepository.UpdateAsync(publisher);
         }
     }
 }

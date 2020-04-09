@@ -21,9 +21,9 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
             get { return _dbContext ?? (_dbContext = _dbFactory.Init()); }
         }
 
-        public void Commit()
+        public async Task<int> Commit()
         {
-            DbContext.SaveChanges();
+            return await DbContext.SaveChangesAsync();
         }
     }
 }

@@ -10,32 +10,44 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
     public interface IRepository<T> where T : class
     {
         // Marks an entity as new
-        T Add(T entity);
+        Task<T> AddAsync(T entity);
 
         // Marks an entity as modified
-        void Update(T entity);
+        Task UpdateAsync(T entity);
 
         // Marks an entity to be removed
-        T Delete(T entity);
+        Task<T> DeleteAsync(T entity);
 
-        T Delete(int id);
+        Task<T> DeleteAsync(int id);
 
         //Delete multi records
-        void DeleteMulti(Expression<Func<T, bool>> where);
+        Task DeleteMultiAsync(Expression<Func<T, bool>> where);
 
         // Get an entity by int id
-        T GetSingleById(int id);
+        Task<T> GetSingleByIdAsync(int id);
 
-        T GetSingleByCondition(Expression<Func<T, bool>> expression, string[] includes = null);
+        Task<T> GetSingleByConditionAsync(Expression<Func<T, bool>> expression, string[] includes = null);
 
-        IEnumerable<T> GetAll(string[] includes = null);
+        Task<IEnumerable<T>> GetAllAsync(string[] includes = null);
 
-        IEnumerable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null);
+        Task<IEnumerable<T>> GetMultiAsync(Expression<Func<T, bool>> predicate, string[] includes = null);
 
-        IEnumerable<T> GetMultiPaging(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50, string[] includes = null);
+        /// <summary>
+        /// Get records by page.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="index"></param>
+        /// <param name="size"></param>
+        /// <param name="includes"></param>
+        /// <returns>
+        ///  Just have twos items
+        ///  First index: All records match with keyword and pagging
+        ///  Last index: Total record without pagging 
+        ///  </returns>
+        Task<object[]> GetMultiPagingAsync(Expression<Func<T, bool>> filter, int index = 0, int size = 50, string[] includes = null);
 
-        int Count(Expression<Func<T, bool>> where);
+        Task<int> CountAsync(Expression<Func<T, bool>> where);
 
-        bool CheckContains(Expression<Func<T, bool>> predicate);
+        Task<bool> CheckContainsAsync(Expression<Func<T, bool>> predicate);
     }
 }

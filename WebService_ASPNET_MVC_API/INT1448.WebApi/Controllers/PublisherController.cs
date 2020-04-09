@@ -24,7 +24,7 @@ namespace INT1448.WebApi.Controllers
         [System.Web.Mvc.HttpGet]
         public async Task<IHttpActionResult> Get()
         {
-            var publishers = _publisherService.GetAll();
+            var publishers = await _publisherService.GetAll();
             if (publishers == null)
             {
                 return NotFound();
