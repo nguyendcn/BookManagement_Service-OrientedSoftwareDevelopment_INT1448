@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,9 +46,29 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
         public async virtual Task UpdateAsync(T entity)
         {
             Func<T> Update = () => {
-                T entityUpdated = dbSet.Attach(entity);
-                dataContext.Entry(entity).State = EntityState.Modified;
-                return entityUpdated;
+                //T entityUpdated = dbSet.Attach(entity);
+                //dataContext.Entry(entity).State = EntityState.Modified;
+                try
+                {
+                    PropertyInfo propInfo = entity.GetType().GetProperty("ID");
+                    object keyValue = propInfo.GetValue(entity, null);
+
+                    T entityUpdate = dbSet.Find(keyValue);
+                    if (entityUpdate == null)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        dataContext.Entry(entityUpdate).CurrentValues.SetValues(entity);
+                        return entityUpdate;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(DateTime.Now + ":  " + ex.Message);
+                    return null;
+                }
             };
             await Task.Run(Update);  
         }
