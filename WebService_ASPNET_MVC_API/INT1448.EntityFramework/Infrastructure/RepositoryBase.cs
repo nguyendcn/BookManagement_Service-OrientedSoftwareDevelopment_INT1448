@@ -98,12 +98,6 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
         public async virtual Task<T> DeleteAsync(int id)
         {
             Func<T> Delete = () => {
-
-                if (id < 0)
-                {
-                    throw new INT1448Exception(HttpStatusCode.NotFound, $"{DateTime.Now}: Can not delete entity had ID( {id} ). {id} is not match with id format.");
-                }
-
                 var entity = dbSet.Find(id);
                 if (entity == null)
                 {
@@ -133,7 +127,6 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
             await Task.Run(Delete);
         }
 
-        [IDFilterAttribute]
         public async virtual Task<T> GetSingleByIdAsync(int id)
         {
             Func<T> Get = () => {

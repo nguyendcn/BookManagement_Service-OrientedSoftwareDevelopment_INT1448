@@ -17,22 +17,22 @@ namespace INT1448.Shared.Filters
             if (!modelState.IsValid)
                 actionContext.Response = actionContext.Request
                      .CreateErrorResponse(HttpStatusCode.BadRequest, modelState);
-            else
-            {
-                var errors = new List<string>();
-                foreach (var state in modelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    }
-                }
+            //else
+            //{
+            //    var errors = new List<string>();
+            //    foreach (var state in modelState)
+            //    {
+            //        foreach (var error in state.Value.Errors)
+            //        {
+            //            errors.Add(error.ErrorMessage);
+            //        }
+            //    }
 
-                var response = new { errors = errors };
+            //    var response = new { errors = errors };
 
-                actionContext.Response = actionContext.Request
-                .CreateResponse(HttpStatusCode.BadRequest, response, JsonMediaTypeFormatter.DefaultMediaType);
-            }
+            //    actionContext.Response = actionContext.Request
+            //    .CreateResponse(HttpStatusCode.BadRequest, response, JsonMediaTypeFormatter.DefaultMediaType);
+            //}
         }
     }
 }
