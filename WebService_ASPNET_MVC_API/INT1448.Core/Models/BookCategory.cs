@@ -13,12 +13,12 @@ namespace INT1448.Core.Models
 
         [Required]
         [Column(TypeName = "NVARCHAR")]
-        [MaxLength(256)]
+        [MaxLength(500)]
         public string Name { set; get; }
 
         [Required]
         [Column(TypeName = "VARCHAR")]
-        [MaxLength(256)]
+        [MaxLength(500)]
         public string Alias { set; get; }
 
         [Required]

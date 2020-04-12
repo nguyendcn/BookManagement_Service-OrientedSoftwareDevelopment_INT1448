@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
+    using System.Diagnostics;
     using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<INT1448.EntityFramework.INT1448DbContext>
@@ -42,16 +43,18 @@
             {
                 IList<BookCategory> defaultBookCategory = new List<BookCategory>()
                 {
-                    new BookCategory(){Name="Chính trị – pháp luật", Alias="chinh-tri-phap-luat", Description="", Books = null},
-                    new BookCategory(){Name="Khoa học công nghệ – Kinh tế", Alias="khoa-hoc-cong-nghe-kinh-te", Description="", Books = null},
-                    new BookCategory(){Name="Văn hóa xã hội – Lịch sử", Alias="van-hoa-xa-hoi-lich-su", Description="", Books = null},
-                    new BookCategory(){Name="Văn học nghệ thuật", Alias="van-hoc-nghe-thuat", Description="", Books = null},
-                    new BookCategory(){Name="Giáo trình", Alias="giao-trinh", Description="", Books = null},
-                    new BookCategory(){Name="Truyện - tiểu thuyết", Alias="truyen-tieu-thuyet", Description="", Books = null},
-                    new BookCategory(){Name="Tâm lý - tâm linh - tôn giáo", Alias="tam-ly-tam-linh-ton-giao", Description="", Books = null},
-                    new BookCategory(){Name="Thiếu nhi", Alias="thieu-nhi", Description="", Books = null},
+                    new BookCategory(){Name="Chính trị – pháp luật", Alias="chinh-tri-phap-luat", Description="none", Books = null},
+                    new BookCategory(){Name="Khoa học công nghệ – Kinh tế", Alias="khoa-hoc-cong-nghe-kinh-te", Description="none", Books = null},
+                    new BookCategory(){Name="Văn hóa xã hội – Lịch sử", Alias="van-hoa-xa-hoi-lich-su", Description="none", Books = null},
+                    new BookCategory(){Name="Văn học nghệ thuật", Alias="van-hoc-nghe-thuat", Description="none", Books = null},
+                    new BookCategory(){Name="Giáo trình", Alias="giao-trinh", Description="none", Books = null},
+                    new BookCategory(){Name="Truyện - tiểu thuyết", Alias="truyen-tieu-thuyet", Description="none", Books = null},
+                    new BookCategory(){Name="Tâm lý - tâm linh - tôn giáo", Alias="tam-ly-tam-linh-ton-giao", Description="none", Books = null},
+                    new BookCategory(){Name="Thiếu nhi", Alias="thieu-nhi", Description="none", Books = null},
                     //new BookCategory(){Name="", Alias="", Description="", Books = null},
                 };
+                context.BookCategories.AddRange(defaultBookCategory);
+                context.SaveChanges();
             }
         }
     }

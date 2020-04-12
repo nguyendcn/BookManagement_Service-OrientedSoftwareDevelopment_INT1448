@@ -27,18 +27,15 @@ namespace INT1448.WebApi.App_Start
 
             builder.RegisterType<INT1448DbContext>().AsSelf().InstancePerRequest();
 
-            builder.RegisterType<PublisherRepository>().As<IPublisherRepository>().InstancePerRequest();
-            builder.RegisterType<PublisherService>().As<IPublisherService>().InstancePerRequest();
-
             // Repositories
-            //builder.RegisterAssemblyTypes(typeof(PublisherRepository).Assembly)
-            //    .Where(t => t.Name.EndsWith("Repository"))
-            //    .AsImplementedInterfaces().InstancePerRequest();
+            builder.RegisterAssemblyTypes(typeof(PublisherRepository).Assembly)
+                .Where(t => t.Name.EndsWith("Repository"))
+                .AsImplementedInterfaces().InstancePerRequest();
 
             //// Services
-            //builder.RegisterAssemblyTypes(typeof(PublisherService).Assembly)
-            //   .Where(t => t.Name.EndsWith("Service"))
-            //   .AsImplementedInterfaces().InstancePerRequest();
+            builder.RegisterAssemblyTypes(typeof(PublisherService).Assembly)
+               .Where(t => t.Name.EndsWith("Service"))
+               .AsImplementedInterfaces().InstancePerRequest();
 
             var container = builder.Build();
             var resolver = new AutofacWebApiDependencyResolver(container);
