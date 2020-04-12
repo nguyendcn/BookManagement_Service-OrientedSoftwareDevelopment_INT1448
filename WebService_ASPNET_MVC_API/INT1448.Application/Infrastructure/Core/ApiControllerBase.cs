@@ -1,4 +1,5 @@
-﻿using System;
+﻿using INT1448.Shared.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -48,10 +49,16 @@ namespace INT1448.Application.Infrastructure.Core
                     LogError(dbEx);
                     response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, dbEx.InnerException.Message);
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
+                    if(ex is INT1448Exception)
+                    {
+                        INT1448Exception appEx = (ex as INT1448Exception);
+                        LogError(appEx);
+                        response = requestMessage.CreateErrorResponse((HttpStatusCode)appEx.StatusCode, appEx.Message);
+                    }
                     LogError(ex);
-                    response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                    response = requestMessage.CreateErrorResponse(HttpStatusCode.NotFound, ex.InnerException.Message);
                 }
                 return response;
             };
@@ -102,7 +109,7 @@ namespace INT1448.Application.Infrastructure.Core
                 //error.StackTrace = ex.StackTrace;
                 //_errorService.Create(error);
                 //_errorService.Save();
-                Debug.Fail(DateTime.Now + ":  " + ex.Message);
+                Debug.WriteLine(DateTime.Now + ":  " + ex.Message);
             }
             catch
             {

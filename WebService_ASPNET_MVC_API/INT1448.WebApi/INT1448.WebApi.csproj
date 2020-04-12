@@ -171,6 +171,10 @@
       <Project>{4321b8ba-11a2-47fe-9b26-93649413dc24}</Project>
       <Name>INT1448.EntityFramework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\INT1448.Shared\INT1448.Shared.csproj">
+      <Project>{87c3c8c9-b67e-4576-ace8-01c26117809e}</Project>
+      <Name>INT1448.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

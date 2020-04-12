@@ -29,7 +29,8 @@ namespace INT1448.Application.Services
 
         public async Task<Publisher> Delete(int id)
         {
-            return await _publisherRepository.DeleteAsync(id);
+
+             return await _publisherRepository.DeleteAsync(id);
         }
 
         public async Task<Publisher> Delete(Publisher publisher)

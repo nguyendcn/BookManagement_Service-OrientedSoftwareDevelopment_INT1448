@@ -1,12 +1,15 @@
-﻿using System;
+﻿using INT1448.Shared.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using INT1448.Shared.Filters;
 
 namespace INT1448.EntityFramework.EntityFramework.Infrastructure
 {
@@ -38,7 +41,18 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
         public async virtual Task<T> AddAsync(T entity)
         {
             Func<T> Add = () => {
-                return dbSet.Add(entity);
+                if(entity is null)
+                {
+                    throw new INT1448Exception(HttpStatusCode.NotFound, $"Can not added entity because entity was null.");
+                }
+                try
+                {
+                    return dbSet.Add(entity);
+                }
+                catch (Exception ex)
+                {
+                    throw new INT1448Exception(HttpStatusCode.NotFound, $"{DateTime.Now}: ", ex);
+                }
             };
             return await Task.Run(Add);
         }
@@ -84,8 +98,26 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
         public async virtual Task<T> DeleteAsync(int id)
         {
             Func<T> Delete = () => {
+
+                if (id < 0)
+                {
+                    throw new INT1448Exception(HttpStatusCode.NotFound, $"{DateTime.Now}: Can not delete entity had ID( {id} ). {id} is not match with id format.");
+                }
+
                 var entity = dbSet.Find(id);
-                return dbSet.Remove(entity);
+                if (entity == null)
+                {
+                    throw new INT1448Exception(HttpStatusCode.NotFound, $"{DateTime.Now}: Entity was null");
+                }
+
+                try
+                {
+                    return dbSet.Remove(entity);
+                }
+                catch (Exception ex)
+                {
+                    throw new INT1448Exception(HttpStatusCode.NotFound, $"{DateTime.Now}: Can not deleted entity.", ex);
+                }
             };
             return await Task.Run(Delete);
         }
@@ -101,10 +133,20 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
             await Task.Run(Delete);
         }
 
+        [IDFilterAttribute]
         public async virtual Task<T> GetSingleByIdAsync(int id)
         {
             Func<T> Get = () => {
-                return dbSet.Find(id);
+                T entity;
+                try
+                {
+                    entity = dbSet.Find(id);
+                }
+                catch(INT1448Exception ex)
+                {
+                    throw new INT1448Exception(HttpStatusCode.InternalServerError, $"Error occurred when find the entity.", ex);
+                }
+                return entity;
             };
             return await Task.Run(Get);
         }

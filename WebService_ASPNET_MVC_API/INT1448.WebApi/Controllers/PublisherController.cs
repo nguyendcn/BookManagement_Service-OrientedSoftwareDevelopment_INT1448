@@ -1,6 +1,7 @@
 ﻿using INT1448.Application.Infrastructure.Core;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
+using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,19 +46,16 @@ namespace INT1448.WebApi.Controllers
 
         [Route("getbyid/{id:int}")]
         [HttpGet]
+        [ValidateModelAttribute]
         public async Task<HttpResponseMessage> GetById(int id, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () => {
                 HttpResponseMessage response = null;
-                if (!ModelState.IsValid)
-                {
-                    response = request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
-                }
-                else
-                {
-                    Publisher publishers = await _publisherService.GetById(id);
-                    response = request.CreateResponse(HttpStatusCode.OK, publishers);
-                }
+
+                    Publisher publisher = null;
+
+                        publisher = await _publisherService.GetById(id);
+                        response = request.CreateResponse(HttpStatusCode.OK, publisher);
                 return response;
             };
 
@@ -144,9 +142,9 @@ namespace INT1448.WebApi.Controllers
                 }
                 else
                 {
-                    Publisher publisherDeleted = await _publisherService.Delete(id);
-                    await _publisherService.SaveToDb();
-                    response = request.CreateResponse(HttpStatusCode.OK, publisherDeleted);
+                        Publisher publisherDeleted = await _publisherService.Delete(id);
+                        await _publisherService.SaveToDb();
+                        response = request.CreateResponse(HttpStatusCode.OK, publisherDeleted);
                 }
                 return response;
             };
