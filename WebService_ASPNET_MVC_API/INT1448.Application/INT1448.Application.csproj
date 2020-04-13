@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Core\ApiControllerBase.cs" />
     <Compile Include="Infrastructure\Exeptions\INT1448Exception.cs" />
+    <Compile Include="IServices\IBookService.cs" />
     <Compile Include="IServices\IAuthorService.cs" />
     <Compile Include="IServices\IBookAuthorService.cs" />
     <Compile Include="IServices\IBookCategoryService.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Services\AuthorService.cs" />
     <Compile Include="Services\BookAuthorService.cs" />
     <Compile Include="Services\BookCategoryService.cs" />
+    <Compile Include="Services\BookService.cs" />
     <Compile Include="Services\PublisherService.cs" />
   </ItemGroup>
   <ItemGroup>

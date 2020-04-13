@@ -78,6 +78,55 @@
                 context.Authors.AddRange(defaultAuthors);
                 context.SaveChanges();
             }
+
+            if(context.Books.Count() == 0)
+            {
+                IList<Book> defaultBooks = new List<Book>()
+                {
+                    new Book(){Name="Bộ Sách Hồ Chí Minh - Tác Phẩm (Hộp 5 Cuốn)", PubDate=new DateTime(2020, 04, 13), Cost=148000, Retail=118000, CategoryID=1, PublisherID=2 },
+                    new Book(){Name="Di Chúc Của Chủ Tịch Hồ Chí Minh", PubDate=new DateTime(2020, 04, 13), Cost=30000, Retail=24000, CategoryID=3, PublisherID=2 },
+                    new Book(){Name="Nhật Ký Trong Tù", PubDate=new DateTime(2020, 04, 13), Cost=35000, Retail=32000, CategoryID=3, PublisherID=5 },
+                    new Book(){Name="Dế Mèn Phiêu Lưu Ký (Tái Bản 2018)", PubDate=new DateTime(2020, 04, 13), Cost=120000, Retail=110000, CategoryID=6, PublisherID=1 },
+                    new Book(){Name="Tô Hoài - Tuyển Tập Truyện Ngắn Hay", PubDate=new DateTime(2020, 04, 13), Cost=98000, Retail=78000, CategoryID=6, PublisherID=6 },
+                    new Book(){Name="Hai Khối Tình", PubDate=new DateTime(2020, 04, 13), Cost=42000, Retail=34000, CategoryID=6, PublisherID=6 },
+                    new Book(){Name="Chút Phận Linh Đinh", PubDate=new DateTime(2020, 04, 13), Cost=106000, Retail=96000, CategoryID=6, PublisherID=6 },
+                    new Book(){Name="10 Vạn Câu Hỏi Vì Sao - Khám Phá Thế Giới Vi Sinh Vật", PubDate=new DateTime(2020, 04, 13), Cost=55000, Retail=44000, CategoryID=8, PublisherID=12 },
+                    new Book(){Name="10 Vạn Câu Hỏi Vì Sao - Khám Phá Thế Giới Thực ", PubDate=new DateTime(2020, 04, 13), Cost=50000, Retail=40000, CategoryID=8, PublisherID=12 },
+                    new Book(){Name="10 Vạn Câu Hỏi Vì Sao - Khám Phá Thế Giới Động Vật", PubDate=new DateTime(2020, 04, 13), Cost=65000, Retail=60000, CategoryID=8, PublisherID=12 },
+                    new Book(){Name="Hướng Dẫn Thực Hành Kế Toán Chi Phí Sản Xuất Và Tính Giá Thành Sản Phẩm Trong Doanh Nghiệp", PubDate=new DateTime(2020, 04, 13), Cost=120000, Retail=110000, CategoryID=2, PublisherID=9 },
+                    new Book(){Name="Kế Toán Tài Chính", PubDate=new DateTime(2020, 04, 13), Cost=95000, Retail=76000, CategoryID=2, PublisherID=5 },
+                    new Book(){Name="Người Tị Nạn", PubDate=new DateTime(2020, 04, 13), Cost=195000, Retail=156000, CategoryID=7, PublisherID=6 },
+                    new Book(){Name="Từ Điển Thành Ngữ Tục Ngữ Ca Dao Việt Nam ", PubDate=new DateTime(2020, 04, 13), Cost=189000, Retail=151000, CategoryID=5, PublisherID=3 },
+                    //new Book(){Name="", PubDate=new DateTime(2020, 04, 13), Cost=0, Retail=0, CategoryID=1, PublisherID=1 },
+
+                };
+                context.Books.AddRange(defaultBooks);
+                context.SaveChanges();
+            }
+
+            if(context.BookAuthors.Count() == 0)
+            {
+                IList<BookAuthor> defaultBookAuthors = new List<BookAuthor>()
+                {
+                    new BookAuthor(){BookID=1, AuthorID=1},
+                    new BookAuthor(){BookID=2, AuthorID=1},
+                    new BookAuthor(){BookID=3, AuthorID=1},
+                    new BookAuthor(){BookID=4, AuthorID=7},
+                    new BookAuthor(){BookID=5, AuthorID=7},
+                    new BookAuthor(){BookID=6, AuthorID=8},
+                    new BookAuthor(){BookID=7, AuthorID=8},
+                    new BookAuthor(){BookID=8, AuthorID=4},
+                    new BookAuthor(){BookID=9, AuthorID=4},
+                    new BookAuthor(){BookID=10, AuthorID=4},
+                    new BookAuthor(){BookID=11, AuthorID=6},
+                    new BookAuthor(){BookID=12, AuthorID=6},
+                    new BookAuthor(){BookID=13, AuthorID=11},
+                    new BookAuthor(){BookID=14, AuthorID=11},
+                    //new BookAuthor(){BookID=1, AuthorID=1},
+                };
+                context.BookAuthors.AddRange(defaultBookAuthors);
+                context.SaveChanges();
+            }
         }
     }
 }
