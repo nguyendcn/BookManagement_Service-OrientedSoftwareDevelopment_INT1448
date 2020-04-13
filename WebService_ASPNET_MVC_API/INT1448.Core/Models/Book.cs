@@ -42,5 +42,7 @@ namespace INT1448.Core.Models
         public virtual Publisher Publisher { get; set; }
 
         public virtual IEnumerable<BookAuthor> BookAuthors { get; set; }
+
+        public virtual IEnumerable<BookImage> ProductImages { get; set; }
     }
 }

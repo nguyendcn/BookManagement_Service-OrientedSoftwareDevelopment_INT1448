@@ -21,6 +21,7 @@ namespace INT1448.EntityFramework
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<BookAuthor> BookAuthors { get; set; }
+        public DbSet<BookImage> BookImages { get; set; }
 
     }
 }
