@@ -38,7 +38,6 @@ namespace INT1448.Core.Models
         [ForeignKey("CategoryID")]
         public virtual BookCategory BookCategory { get; set; }
 
-        [NotMapped]
         [ForeignKey("PublisherID")]
         public virtual Publisher Publisher { get; set; }
 
