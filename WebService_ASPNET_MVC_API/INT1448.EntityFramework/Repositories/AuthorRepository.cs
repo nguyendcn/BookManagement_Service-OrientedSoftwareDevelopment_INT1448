@@ -14,7 +14,7 @@ namespace INT1448.EntityFramework.EntityFramework.Repositories
     }
     public class AuthorRepository : RepositoryBase<Author>, IAuthorRepository
     {
-        public AuthorRepository(DbFactory dbFactory)
+        public AuthorRepository(IDbFactory dbFactory)
             : base(dbFactory)
         {
 

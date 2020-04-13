@@ -56,6 +56,28 @@
                 context.BookCategories.AddRange(defaultBookCategory);
                 context.SaveChanges();
             }
+
+            if(context.Authors.Count() == 0)
+            {
+                IList<Author> defaultAuthors = new List<Author>()
+                {
+                    new Author(){FullName="Hồ Chí Minh", Address="làng Sen, xã Kim Liên, huyện Nam Đàn, tỉnh Nghệ An"},
+                    new Author(){FullName="Nguyễn Hữu Phước", Address="Xã Khánh Hội, huyện U Minh, Cà Mau"},
+                    new Author(){FullName="Ngô Minh Vân", Address="778/12 Nguyen Kiem, Ward 4, Phu Nhuan Dist, Ho Chi Minh City"},
+                    new Author(){FullName="Ngọc Linh", Address="17 St. 8, Ward 7, Go Vap Dist, Ho Chi Minh City"},
+                    new Author(){FullName="Lê Văn Thông", Address="8 Hoang Van Thu Street, Phu Nhuan District, Ho Chi Minh City"},
+                    new Author(){FullName="PGS.TS.Võ Văn Nhị", Address="352 Lang Thuong Street, Dong Da District, Hanoi"},
+                    new Author(){FullName="Tô Hoài", Address="136/36 Nguyen Thi Tan Street, Ward 2, District 8, Ho Chi Minh City"},
+                    new Author(){FullName="Hồ Biểu Chánh", Address="220/42/16 Nguyen Xi St., Ward 26, Binh Thanh Dist, Ho Chi Minh City"},
+                    new Author(){FullName="Khánh Linh", Address="304/65 Ho Van Hue, Ward 9, Phu Nhuan Dist, Ho Chi Minh"},
+                    new Author(){FullName="Gia Bảo", Address="Str. 10, Song Than 1 IZ, Di An Townlet, Binh Duong"},
+                    new Author(){FullName="Việt Chương", Address="129 Khanh Hoi St., Ward 3, Dist. 4, Ho Chi Minh"},
+                    new Author(){FullName="Thiên Kim", Address="11 Pasteur St., Nguyen Thai Binh Ward, Dist. 1, Ho Chi Minh"},
+                    //new Author(){FullName="", Address=""},
+                };
+                context.Authors.AddRange(defaultAuthors);
+                context.SaveChanges();
+            }
         }
     }
 }

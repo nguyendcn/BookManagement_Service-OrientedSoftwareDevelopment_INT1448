@@ -10,12 +10,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using System.Web.Http;
 
 
 namespace INT1448.WebApi.Controllers
 {
-    [RoutePrefix("api/publisher")]
+    [RoutePrefix("api/publishers")]
     public class PublisherController : ApiControllerBase
     {
         private IPublisherService _publisherService;

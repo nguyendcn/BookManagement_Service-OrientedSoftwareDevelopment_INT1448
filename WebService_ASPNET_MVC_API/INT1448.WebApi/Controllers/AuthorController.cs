@@ -12,17 +12,15 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-
 namespace INT1448.WebApi.Controllers
 {
-    [RoutePrefix("api/bookcategories")]
-    public class BookCategoryController : ApiControllerBase
+    [RoutePrefix("api/authors")]
+    public class AuthorController : ApiControllerBase
     {
-        IBookCategoryService _bookCategoryService;
-
-        public BookCategoryController(IBookCategoryService bookCategoryService)
+        private IAuthorService _authorService;
+        public AuthorController(IAuthorService authorService)
         {
-            this._bookCategoryService = bookCategoryService;
+            this._authorService = authorService;
         }
 
         [Route("getall")]
@@ -34,8 +32,8 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<BookCategory> bookCategories = await _bookCategoryService.GetAll();
-                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookCategories, JsonMediaTypeFormatter.DefaultMediaType);
+                IEnumerable<Author> authors = await _authorService.GetAll();
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, authors, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
             };
@@ -52,17 +50,17 @@ namespace INT1448.WebApi.Controllers
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
-                BookCategory bookCategory = null;
+                Author Author = null;
 
-                bookCategory = await _bookCategoryService.GetById(id);
+                Author = await _authorService.GetById(id);
 
-                if (bookCategory == null)
+                if (Author == null)
                 {
                     var message = new NotificationResponse("true", "Not found.");
                     response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
                     return response;
                 }
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategory);
+                response = request.CreateResponse(HttpStatusCode.OK, Author);
                 return response;
             };
 
@@ -82,8 +80,8 @@ namespace INT1448.WebApi.Controllers
                 }
                 else
                 {
-                    IEnumerable<BookCategory> bookCategories = await _bookCategoryService.GetAll();
-                    response = request.CreateResponse(HttpStatusCode.OK, bookCategories);
+                    IEnumerable<Author> authors = await _authorService.GetAll();
+                    response = request.CreateResponse(HttpStatusCode.OK, authors);
                 }
                 return response;
             };
@@ -94,16 +92,16 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(BookCategory bookCategory, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Update(Author Author, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbBookCategory = await _bookCategoryService.GetById(bookCategory.ID);
+                var dbBookCategory = await _authorService.GetById(Author.ID);
 
-                await _bookCategoryService.Update(bookCategory);
-                await _bookCategoryService.SaveToDb();
+                await _authorService.Update(Author);
+                await _authorService.SaveToDb();
 
                 response = request.CreateResponse(HttpStatusCode.OK, dbBookCategory);
 
@@ -116,14 +114,14 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(BookCategory bookCategory, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(Author Author, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                BookCategory bookCategoryAdded = await _bookCategoryService.Add(bookCategory);
-                await _bookCategoryService.SaveToDb();
+                Author bookCategoryAdded = await _authorService.Add(Author);
+                await _authorService.SaveToDb();
                 response = request.CreateResponse(HttpStatusCode.OK, bookCategoryAdded);
                 return response;
             };
@@ -141,9 +139,9 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                BookCategory bookCategoryDeleted = await _bookCategoryService.Delete(id);
+                Author bookCategoryDeleted = await _authorService.Delete(id);
 
-                await _bookCategoryService.SaveToDb();
+                await _authorService.SaveToDb();
                 response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDeleted);
 
                 return response;
