@@ -1,7 +1,10 @@
-﻿using INT1448.Application.IServices;
+﻿using AutoMapper;
+using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
 using INT1448.EntityFramework.EntityFramework.Repositories;
+using INT1448.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,52 +18,111 @@ namespace INT1448.Application.Services
     {
         private IBookRepository _bookRepository;
         private IUnitOfWork _unitOfWork;
-        public BookService(IBookRepository bookRepository, IUnitOfWork unitOfWork)
+        private IMapper _mapper;
+
+        public BookService(IBookRepository bookRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._bookRepository = bookRepository;
             this._unitOfWork = unitOfWork;
+            this._mapper = mapper;
         }
 
-        public async Task<Book> Add(Book book)
+        public async Task<BookDTO> Add(BookDTO bookDto)
         {
-            return await _bookRepository.AddAsync(book);
+            Func<Task<BookDTO>> AddAsync = async () => {
+
+                Book bookAdd = _mapper.Map<BookDTO, Book>(bookDto);
+                Book bookAdded = await _bookRepository.AddAsync(bookAdd);
+                return _mapper.Map<Book, BookDTO>(bookAdded);
+            };
+
+            return await Task.Run(AddAsync);
         }
 
-        public async Task<Book> Delete(int id)
+        public async Task<BookDTO> Delete(int id)
         {
-            return await _bookRepository.DeleteAsync(id);
+            Func<Task<BookDTO>> DeleteAsync = async () => {
+
+                Book bookDeleted = await _bookRepository.DeleteAsync(id);
+                return _mapper.Map<Book, BookDTO>(bookDeleted);
+            };
+
+            return await Task.Run(DeleteAsync);
         }
 
-        public async Task<Book> Delete(Book book)
+        public async Task<BookDTO> Delete(BookDTO bookDto)
         {
-            return await _bookRepository.DeleteAsync(book);
+            Func<Task<BookDTO>> DeleteAsync = async () => {
+
+                Book bookDelete = _mapper.Map<BookDTO, Book>(bookDto);
+                Book bookDeleted = await _bookRepository.AddAsync(bookDelete);
+                return _mapper.Map<Book, BookDTO>(bookDeleted);
+            };
+
+            return await Task.Run(DeleteAsync);
         }
 
-        public async Task<IEnumerable<Book>> GetAll()
+        public async Task<IEnumerable<BookDTO>> GetAll()
         {
-            return await _bookRepository.GetAllAsync();
+            Func<Task<IEnumerable<BookDTO>>> GetAllAsync = async () => {
+
+                IEnumerable<Book> bookFound = await _bookRepository.GetAllAsync();
+
+                IEnumerable<BookDTO> bookDTOs = bookFound.ForEach<Book, BookDTO>((item) => {
+                    return _mapper.Map<Book, BookDTO>(item);
+                });
+                return bookDTOs;
+            };
+
+            return await Task.Run(GetAllAsync);
         }
 
-        public async Task<IEnumerable<Book>> GetAll(string keyword)
+        public async Task<IEnumerable<BookDTO>> GetAll(string keyword)
         {
-            if (!String.IsNullOrEmpty(keyword))
-            {
-                return await _bookRepository.GetMultiAsync(item => (item.Name.Contains(keyword)));
-            }
-            else
-            {
-                return await _bookRepository.GetAllAsync();
-            }
+            Func<Task<IEnumerable<BookDTO>>> GetAllAsync = async () => {
+                IEnumerable<Book> bookFound;
+
+                if (!String.IsNullOrEmpty(keyword))
+                {
+                    bookFound = await _bookRepository.GetMultiAsync(item => (item.Name.Contains(keyword)));
+                }
+                else
+                {
+                    bookFound = await _bookRepository.GetAllAsync();
+                }
+
+                IEnumerable<BookDTO> bookDTOs = bookFound.ForEach<Book, BookDTO>((item) => {
+                    return _mapper.Map<Book, BookDTO>(item);
+                });
+                return bookDTOs;
+            };
+
+            return await Task.Run(GetAllAsync);
         }
 
-        public async Task<Book> GetById(int id)
+        public async Task<BookDTO> GetById(int id)
         {
-            return await _bookRepository.GetSingleByIdAsync(id);
+            Func<Task<BookDTO>> GetByIdAsync = async () => {
+                Book bookFound = await _bookRepository.GetSingleByIdAsync(id);
+                return _mapper.Map<Book, BookDTO>(bookFound);
+            };
+
+            return await Task.Run(GetByIdAsync);
         }
 
-        public async Task<IEnumerable<Book>> GetManyAsync(Expression<Func<Book, bool>> where, string[] includes=null)
+        public async Task<IEnumerable<BookDTO>> GetManyAsync(Expression<Func<Book, bool>> where, string[] includes=null)
         {
-            return await _bookRepository.GetMultiAsync(where, includes);
+            Func<Task<IEnumerable<BookDTO>>> GetAllAsync = async () => {
+
+                IEnumerable<Book> bookFound = await _bookRepository.GetMultiAsync(where, includes);
+
+                IEnumerable<BookDTO> bookDTOs = bookFound.ForEach<Book, BookDTO>((item) => {
+                    return _mapper.Map<Book, BookDTO>(item);
+                });
+                return bookDTOs;
+            };
+
+            return await Task.Run(GetAllAsync);
         }
 
         public async Task SaveToDb()
@@ -68,9 +130,15 @@ namespace INT1448.Application.Services
             await _unitOfWork.Commit();
         }
 
-        public async Task Update(Book book)
+        public async Task Update(BookDTO bookDto)
         {
-            await _bookRepository.UpdateAsync(book);
+            Func<Task> UpdateAsync = async () => {
+
+                Book bookUpdate = _mapper.Map<BookDTO, Book>(bookDto);
+                await _bookRepository.UpdateAsync(bookUpdate);
+            };
+
+            await Task.Run(UpdateAsync);
         }
     }
 }

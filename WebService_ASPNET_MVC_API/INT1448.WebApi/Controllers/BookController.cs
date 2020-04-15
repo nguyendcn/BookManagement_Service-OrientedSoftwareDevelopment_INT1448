@@ -1,4 +1,5 @@
 ﻿using INT1448.Application.Infrastructure.Core;
+using INT1448.Application.Infrastructure.DTOs;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
@@ -33,12 +34,9 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<Book> books = await _bookService.GetAll();
-                foreach (Book b in books)
-                {
-                    Debug.WriteLine($"Book: {b.Name + b.Publisher.Name}");
-                }
-                response = requestMessage.CreateResponse(HttpStatusCode.OK, books, JsonMediaTypeFormatter.DefaultMediaType);
+                IEnumerable<BookDTO> bookDtos = await _bookService.GetAll();
+
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookDtos, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
             };
@@ -55,17 +53,17 @@ namespace INT1448.WebApi.Controllers
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
-                Book book = null;
+                BookDTO bookDto = null;
 
-                book = await _bookService.GetById(id);
+                bookDto = await _bookService.GetById(id);
 
-                if (book == null)
+                if (bookDto == null)
                 {
                     var message = new NotificationResponse("true", "Not found.");
                     response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
                     return response;
                 }
-                response = request.CreateResponse(HttpStatusCode.OK, book);
+                response = request.CreateResponse(HttpStatusCode.OK, bookDto);
                 return response;
             };
 
@@ -75,15 +73,15 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(HttpRequestMessage request, Book book)
+        public async Task<HttpResponseMessage> Update(HttpRequestMessage request, BookDTO bookDto)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbBook = await _bookService.GetById(book.ID);
+                var dbBook = await _bookService.GetById(bookDto.ID);
 
-                await _bookService.Update(book);
+                await _bookService.Update(bookDto);
                 await _bookService.SaveToDb();
 
                 response = request.CreateResponse(HttpStatusCode.OK, dbBook);
@@ -97,15 +95,15 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(Book book, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(BookDTO bookDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                Book bookAdded = await _bookService.Add(book);
+                BookDTO bookDtoAdded = await _bookService.Add(bookDto);
                 await _bookService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookAdded);
+                response = request.CreateResponse(HttpStatusCode.OK, bookDtoAdded);
                 return response;
             };
 
@@ -122,10 +120,10 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                Book bookDeleted = await _bookService.Delete(id);
+                BookDTO bookDtoDeleted = await _bookService.Delete(id);
 
                 await _bookService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookDeleted);
+                response = request.CreateResponse(HttpStatusCode.OK, bookDtoDeleted);
 
                 return response;
             };

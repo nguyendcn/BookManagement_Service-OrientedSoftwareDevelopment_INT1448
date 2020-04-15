@@ -1,4 +1,5 @@
-﻿using INT1448.Core.Models;
+﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +11,21 @@ namespace INT1448.Application.IServices
 {
     public interface IBookService
     {
-        Task<Book> Add(Book book);
+        Task<BookDTO> Add(BookDTO bookDto);
 
-        Task Update(Book book);
+        Task Update(BookDTO bookDto);
 
-        Task<Book> Delete(int id);
+        Task<BookDTO> Delete(int id);
 
-        Task<Book> Delete(Book book);
+        Task<BookDTO> Delete(BookDTO bookDto);
 
-        Task<Book> GetById(int id);
+        Task<BookDTO> GetById(int id);
 
-        Task<IEnumerable<Book>> GetAll();
+        Task<IEnumerable<BookDTO>> GetAll();
 
-        Task<IEnumerable<Book>> GetAll(string keyword);
+        Task<IEnumerable<BookDTO>> GetAll(string keyword);
 
-        Task<IEnumerable<Book>> GetManyAsync(Expression<Func<Book, bool>> where, string[] includes = null);
+        Task<IEnumerable<BookDTO>> GetManyAsync(Expression<Func<Book, bool>> where, string[] includes = null);
 
         Task SaveToDb();
     }
