@@ -1,11 +1,9 @@
 ﻿using INT1448.Application.Infrastructure.Core;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
-using INT1448.Shared.CommonType;
 using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -17,7 +15,7 @@ namespace INT1448.WebApi.Controllers
     [RoutePrefix("api/bookauthors")]
     public class BookAuthorController : ApiControllerBase
     {
-        IBookAuthorService _bookAuthorService;
+        private IBookAuthorService _bookAuthorService;
 
         public BookAuthorController(IBookAuthorService bookAuthorService)
         {

@@ -2,10 +2,8 @@
 using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
@@ -31,7 +29,7 @@ namespace INT1448.WebApi.Controllers
             {
                 var httpRequest = HttpContext.Current.Request;
 
-                if(httpRequest.Files.Count == 0)
+                if (httpRequest.Files.Count == 0)
                 {
                     var res = string.Format("Please Upload a image.");
                     dict.Add("error", res);
@@ -62,9 +60,9 @@ namespace INT1448.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                if(fileAdded.Count != 0)
+                if (fileAdded.Count != 0)
                 {
-                    foreach(string filename in fileAdded)
+                    foreach (string filename in fileAdded)
                     {
                         _storageService.DeleteFileAsync(filename);
                     }

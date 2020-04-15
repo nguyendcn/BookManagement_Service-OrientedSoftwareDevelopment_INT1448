@@ -6,7 +6,6 @@ using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -35,7 +34,7 @@ namespace INT1448.WebApi.Controllers
                 HttpResponseMessage response = null;
 
                 IEnumerable<Book> books = await _bookService.GetAll();
-                foreach(Book b in books)
+                foreach (Book b in books)
                 {
                     Debug.WriteLine($"Book: {b.Name + b.Publisher.Name}");
                 }
