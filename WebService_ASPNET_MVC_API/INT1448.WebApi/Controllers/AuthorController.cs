@@ -36,14 +36,7 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<Author> authors = await _authorService.GetAll();
-
-                List<AuthorDTO> authorDTOs = new List<AuthorDTO>();
-
-                foreach(Author a in authors)
-                {
-                    authorDTOs.Add( _mapper.Map<Author, AuthorDTO>(a));
-                }
+                IEnumerable<AuthorDTO> authorDTOs = await _authorService.GetAll();
 
                 response = requestMessage.CreateResponse(HttpStatusCode.OK, authorDTOs, JsonMediaTypeFormatter.DefaultMediaType);
 
@@ -62,17 +55,17 @@ namespace INT1448.WebApi.Controllers
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
-                Author Author = null;
+                AuthorDTO authorDTO = null;
 
-                Author = await _authorService.GetById(id);
+                authorDTO = await _authorService.GetById(id);
 
-                if (Author == null)
+                if (authorDTO == null)
                 {
                     var message = new NotificationResponse("true", "Not found.");
                     response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
                     return response;
                 }
-                response = request.CreateResponse(HttpStatusCode.OK, Author);
+                response = request.CreateResponse(HttpStatusCode.OK, authorDTO);
                 return response;
             };
 
@@ -92,8 +85,8 @@ namespace INT1448.WebApi.Controllers
                 }
                 else
                 {
-                    IEnumerable<Author> authors = await _authorService.GetAll();
-                    response = request.CreateResponse(HttpStatusCode.OK, authors);
+                    IEnumerable<AuthorDTO> authorDTOs = await _authorService.GetAll();
+                    response = request.CreateResponse(HttpStatusCode.OK, authorDTOs);
                 }
                 return response;
             };
@@ -104,18 +97,18 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(Author Author, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Update(AuthorDTO authorDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbBookCategory = await _authorService.GetById(Author.ID);
+                var dbAuthor = await _authorService.GetById(authorDto.ID);
 
-                await _authorService.Update(Author);
+                await _authorService.Update(authorDto);
                 await _authorService.SaveToDb();
 
-                response = request.CreateResponse(HttpStatusCode.OK, dbBookCategory);
+                response = request.CreateResponse(HttpStatusCode.OK, dbAuthor);
 
                 return response;
             };
@@ -126,15 +119,15 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(Author Author, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(AuthorDTO authorDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                Author bookCategoryAdded = await _authorService.Add(Author);
+                AuthorDTO authorAdded = await _authorService.Add(authorDto);
                 await _authorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryAdded);
+                response = request.CreateResponse(HttpStatusCode.OK, authorAdded);
                 return response;
             };
 
@@ -151,10 +144,10 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                Author bookCategoryDeleted = await _authorService.Delete(id);
+                AuthorDTO authorDeleted = await _authorService.Delete(id);
 
                 await _authorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDeleted);
+                response = request.CreateResponse(HttpStatusCode.OK, authorDeleted);
 
                 return response;
             };
