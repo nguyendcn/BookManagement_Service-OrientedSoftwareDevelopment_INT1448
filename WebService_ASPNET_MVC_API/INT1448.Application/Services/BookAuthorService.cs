@@ -1,7 +1,10 @@
-﻿using INT1448.Application.IServices;
+﻿using AutoMapper;
+using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
 using INT1448.EntityFramework.EntityFramework.Repositories;
+using INT1448.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,42 +17,90 @@ namespace INT1448.Application.Services
     {
         private IBookAuthorRepository _bookAuthorRepository;
         private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
 
-        public BookAuthorService(IBookAuthorRepository bookAuthorRepository, IUnitOfWork unitOfWork)
+        public BookAuthorService(IBookAuthorRepository bookAuthorRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._bookAuthorRepository = bookAuthorRepository;
             this._unitOfWork = unitOfWork;
+            this._mapper = mapper;
         }
-        public async Task<BookAuthor> Add(BookAuthor bookAuthor)
+        public async Task<BookAuthorDTO> Add(BookAuthorDTO bookAuthorDto)
         {
-            return await _bookAuthorRepository.AddAsync(bookAuthor);
-        }
+            Func<Task<BookAuthorDTO>> AddAsync = async () => {
 
-        public async Task<BookAuthor> Delete(int bookId, int authorId)
-        {
-            return await _bookAuthorRepository.DeleteByBookAuthorIdAsync(bookId, authorId);
-        }
+                BookAuthor bookAuthorAdd = _mapper.Map<BookAuthorDTO, BookAuthor>(bookAuthorDto);
+                BookAuthor authorAdded = await _bookAuthorRepository.AddAsync(bookAuthorAdd);
+                return _mapper.Map<BookAuthor, BookAuthorDTO>(authorAdded);
+            };
 
-        public async Task<BookAuthor> Delete(BookAuthor bookAuthor)
-        {
-            return await _bookAuthorRepository.DeleteAsync(bookAuthor);
+            return await Task.Run(AddAsync);
         }
 
-        public async Task<IEnumerable<BookAuthor>> GetByAuthorId(int id)
+        public async Task<BookAuthorDTO> Delete(int bookId, int authorId)
         {
-            return await _bookAuthorRepository.GetMultiAsync(x=>x.AuthorID == id);
+            Func<Task<BookAuthorDTO>> DeleteAsync = async () => {
+
+                BookAuthor bookAuthorDeleted = await _bookAuthorRepository.DeleteByBookAuthorIdAsync(bookId, authorId);
+                return _mapper.Map<BookAuthor, BookAuthorDTO>(bookAuthorDeleted);
+            };
+
+            return await Task.Run(DeleteAsync);
         }
 
-        public async Task<IEnumerable<BookAuthor>> GetByBookId(int id)
+        public async Task<BookAuthorDTO> Delete(BookAuthorDTO bookAuthorDto)
         {
-            return await _bookAuthorRepository.GetMultiAsync(x => x.BookID == id);
+            Func<Task<BookAuthorDTO>> DeleteAsync = async () => {
+
+                BookAuthor bookAuthorDelete = _mapper.Map<BookAuthorDTO, BookAuthor>(bookAuthorDto);
+                BookAuthor authorDeleted = await _bookAuthorRepository.AddAsync(bookAuthorDelete);
+                return _mapper.Map<BookAuthor, BookAuthorDTO>(authorDeleted);
+            };
+
+            return await Task.Run(DeleteAsync);
         }
 
-        public async Task<BookAuthor> GetById(int bookId, int authorId)
+        public async Task<IEnumerable<BookAuthorDTO>> GetByAuthorId(int id)
         {
-            IEnumerable<BookAuthor> bookAuthors = await _bookAuthorRepository.GetMultiAsync(x => (x.BookID == bookId && x.AuthorID == authorId));
+            Func<Task<IEnumerable<BookAuthorDTO>>> GetByIdAsync = async () => {
+                IEnumerable<BookAuthor> bookAuthorsFound = await _bookAuthorRepository.GetMultiAsync(x => x.AuthorID == id);
 
-            return bookAuthors.FirstOrDefault();
+                IEnumerable<BookAuthorDTO> bookAuthorDTOs = bookAuthorsFound.ForEach<BookAuthor, BookAuthorDTO>((item) => {
+                    return _mapper.Map<BookAuthor, BookAuthorDTO>(item);
+                });
+                return bookAuthorDTOs;
+            };
+
+            return await Task.Run(GetByIdAsync);
+        }
+
+        public async Task<IEnumerable<BookAuthorDTO>> GetByBookId(int id)
+        {
+            Func<Task<IEnumerable<BookAuthorDTO>>> GetByIdAsync = async () => {
+                IEnumerable<BookAuthor> bookAuthorsFound = await _bookAuthorRepository.GetMultiAsync(x => x.BookID == id);
+
+                IEnumerable<BookAuthorDTO> bookAuthorDTOs = bookAuthorsFound.ForEach<BookAuthor, BookAuthorDTO>((item) => {
+                    return _mapper.Map<BookAuthor, BookAuthorDTO>(item);
+                });
+                return bookAuthorDTOs;
+            };
+
+            return await Task.Run(GetByIdAsync);
+        }
+
+        public async Task<BookAuthorDTO> GetById(int bookId, int authorId)
+        {
+            Func<Task<BookAuthorDTO>> GetByIdAsync = async () => {
+
+                IEnumerable<BookAuthor> bookAuthors = await _bookAuthorRepository.GetMultiAsync(x => (x.BookID == bookId && x.AuthorID == authorId));
+
+                IEnumerable<BookAuthorDTO> bookAuthorDTOs = bookAuthors.ForEach<BookAuthor, BookAuthorDTO>((item) => {
+                    return _mapper.Map<BookAuthor, BookAuthorDTO>(item);
+                });
+                return bookAuthorDTOs.FirstOrDefault();
+            };
+
+            return await Task.Run(GetByIdAsync);
         }
 
         public async Task SaveToDb()
@@ -57,9 +108,15 @@ namespace INT1448.Application.Services
             await _unitOfWork.Commit();
         }
 
-        public async Task Update(BookAuthor bookAuthor)
+        public async Task Update(BookAuthorDTO bookAuthorDto)
         {
-            await _bookAuthorRepository.UpdateAsync(bookAuthor);
+            Func<Task> UpdateAsync = async () => {
+
+                BookAuthor bookAuthorUpdate = _mapper.Map<BookAuthorDTO, BookAuthor>(bookAuthorDto);
+                await _bookAuthorRepository.UpdateAsync(bookAuthorUpdate);
+            };
+
+            await Task.Run(UpdateAsync);
         }
     }
 }

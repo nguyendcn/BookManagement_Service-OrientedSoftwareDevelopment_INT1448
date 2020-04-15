@@ -1,4 +1,5 @@
 ﻿using INT1448.Application.Infrastructure.Core;
+using INT1448.Application.Infrastructure.DTOs;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.Shared.Filters;
@@ -32,8 +33,8 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<BookAuthor> bookAuthors = await _bookAuthorService.GetByAuthorId(id);
-                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookAuthors, JsonMediaTypeFormatter.DefaultMediaType);
+                IEnumerable<BookAuthorDTO> bookAuthorsDto = await _bookAuthorService.GetByAuthorId(id);
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookAuthorsDto, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
             };
@@ -51,8 +52,8 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<BookAuthor> bookAuthors = await _bookAuthorService.GetByAuthorId(id);
-                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookAuthors, JsonMediaTypeFormatter.DefaultMediaType);
+                IEnumerable<BookAuthorDTO> bookAuthorsDto = await _bookAuthorService.GetByAuthorId(id);
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookAuthorsDto, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
             };
@@ -63,15 +64,15 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(BookAuthor bookAuthor, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Update(BookAuthorDTO bookAuthorDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbBookAuhtor = await _bookAuthorService.GetById(bookAuthor.BookID, bookAuthor.AuthorID);
+                var dbBookAuhtor = await _bookAuthorService.GetById(bookAuthorDto.BookID, bookAuthorDto.AuthorID);
 
-                await _bookAuthorService.Update(bookAuthor);
+                await _bookAuthorService.Update(bookAuthorDto);
                 await _bookAuthorService.SaveToDb();
 
                 response = request.CreateResponse(HttpStatusCode.OK, dbBookAuhtor);
@@ -85,15 +86,14 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(BookAuthor bookAuthor, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(BookAuthorDTO bookAuthorDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                BookAuthor bookAuthorAdded = await _bookAuthorService.Add(bookAuthor);
+                BookAuthorDTO bookAuthorAdded = await _bookAuthorService.Add(bookAuthorDto);
                 await _bookAuthorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookAuthorAdded);
                 response = request.CreateResponse(HttpStatusCode.OK, bookAuthorAdded);
                 return response;
             };
@@ -111,7 +111,7 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                BookAuthor bookAuthorDeleted = await _bookAuthorService.Delete(bookId, authorId);
+                BookAuthorDTO bookAuthorDeleted = await _bookAuthorService.Delete(bookId, authorId);
 
                 await _bookAuthorService.SaveToDb();
                 response = request.CreateResponse(HttpStatusCode.OK, bookAuthorDeleted);

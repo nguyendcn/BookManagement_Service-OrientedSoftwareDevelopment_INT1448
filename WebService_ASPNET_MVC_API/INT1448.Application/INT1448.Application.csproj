@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Core\ApiControllerBase.cs" />
     <Compile Include="Infrastructure\DTOs\AuthorDTO.cs" />
+    <Compile Include="Infrastructure\DTOs\BookAuthorDTO.cs" />
     <Compile Include="Infrastructure\DTOs\BookCategoryDTO.cs" />
     <Compile Include="Infrastructure\DTOs\BookDTO.cs" />
     <Compile Include="Infrastructure\DTOs\BookImageDTO.cs" />
