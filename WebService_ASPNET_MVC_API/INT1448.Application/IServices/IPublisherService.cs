@@ -1,4 +1,5 @@
-﻿using INT1448.Core.Models;
+﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,19 @@ namespace INT1448.Application.IServices
 {
     public interface IPublisherService
     {
-        Task<Publisher> Add(Publisher publisher);
+        Task<PublisherDTO> Add(PublisherDTO publisherDto);
 
-        Task Update(Publisher publisher);
+        Task Update(PublisherDTO publisherDto);
 
-        Task<Publisher> Delete(int id);
+        Task<PublisherDTO> Delete(int id);
 
-        Task<Publisher> Delete(Publisher publisher);
+        Task<PublisherDTO> Delete(PublisherDTO publisherDto);
 
-        Task<Publisher> GetById(int id);
+        Task<PublisherDTO> GetById(int id);
 
-        Task<IEnumerable<Publisher>> GetAll();
+        Task<IEnumerable<PublisherDTO>> GetAll();
 
-        Task<IEnumerable<Publisher>> GetAll(string keyword);
+        Task<IEnumerable<PublisherDTO>> GetAll(string keyword);
 
         /// <summary>
         /// Search records by keyword.

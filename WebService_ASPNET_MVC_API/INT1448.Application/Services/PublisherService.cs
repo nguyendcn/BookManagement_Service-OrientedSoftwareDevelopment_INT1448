@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
+using AutoMapper;
+using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Shared.Extensions;
 
 namespace INT1448.Application.Services
 {
@@ -15,49 +18,97 @@ namespace INT1448.Application.Services
     {
         private IPublisherRepository _publisherRepository;
         private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
 
-        public PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork)
+        public PublisherService(IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._publisherRepository = publisherRepository;
             this._unitOfWork = unitOfWork;
+            this._mapper = mapper;
         }
 
-        public async Task<Publisher> Add(Publisher publisher)
+        public async Task<PublisherDTO> Add(PublisherDTO publisherDto)
         {
-            return await _publisherRepository.AddAsync(publisher);
+            Func<Task<PublisherDTO>> AddAsync = async () => {
+
+                Publisher authorAdd = _mapper.Map<PublisherDTO, Publisher>(publisherDto);
+                Publisher authorAdded = await _publisherRepository.AddAsync(authorAdd);
+                return _mapper.Map<Publisher, PublisherDTO>(authorAdded);
+            };
+
+            return await Task.Run(AddAsync);
         }
 
-        public async Task<Publisher> Delete(int id)
+        public async Task<PublisherDTO> Delete(int id)
         {
 
-             return await _publisherRepository.DeleteAsync(id);
+            Func<Task<PublisherDTO>> DeleteAsync = async () => {
+
+                Publisher authorDeleted = await _publisherRepository.DeleteAsync(id);
+                return _mapper.Map<Publisher, PublisherDTO>(authorDeleted);
+            };
+
+            return await Task.Run(DeleteAsync);
         }
 
-        public async Task<Publisher> Delete(Publisher publisher)
+        public async Task<PublisherDTO> Delete(PublisherDTO publisherDto)
         {
-            return await _publisherRepository.DeleteAsync(publisher);
+            Func<Task<PublisherDTO>> DeleteAsync = async () => {
+
+                Publisher authorDelete = _mapper.Map<PublisherDTO, Publisher>(publisherDto);
+                Publisher authorDeleted = await _publisherRepository.AddAsync(authorDelete);
+                return _mapper.Map<Publisher, PublisherDTO>(authorDeleted);
+            };
+
+            return await Task.Run(DeleteAsync);
         }
 
-        public async Task<IEnumerable<Publisher>> GetAll()
+        public async Task<IEnumerable<PublisherDTO>> GetAll()
         {
-            return await _publisherRepository.GetAllAsync();
+            Func<Task<IEnumerable<PublisherDTO>>> GetAllAsync = async () => {
+
+                IEnumerable<Publisher> authorFound = await _publisherRepository.GetAllAsync();
+
+                IEnumerable<PublisherDTO> authorDTOs = authorFound.ForEach<Publisher, PublisherDTO>((item) => {
+                    return _mapper.Map<Publisher, PublisherDTO>(item);
+                });
+                return authorDTOs;
+            };
+
+            return await Task.Run(GetAllAsync);
         }
 
-        public async Task<IEnumerable<Publisher>> GetAll(string keyword)
+        public async Task<IEnumerable<PublisherDTO>> GetAll(string keyword)
         {
-            if (!String.IsNullOrEmpty(keyword))
-            {
-                return await _publisherRepository.GetMultiAsync(item => ( item.Name.Contains(keyword)));
-            }
-            else
-            {
-                return await _publisherRepository.GetAllAsync();
-            }
+            Func<Task<IEnumerable<PublisherDTO>>> GetAllAsync = async () => {
+                IEnumerable<Publisher> authorFound;
+
+                if (!String.IsNullOrEmpty(keyword))
+                {
+                    authorFound = await _publisherRepository.GetMultiAsync(item => (item.Name.Contains(keyword)));
+                }
+                else
+                {
+                    authorFound = await _publisherRepository.GetAllAsync();
+                }
+
+                IEnumerable<PublisherDTO> authorDTOs = authorFound.ForEach<Publisher, PublisherDTO>((item) => {
+                    return _mapper.Map<Publisher, PublisherDTO>(item);
+                });
+                return authorDTOs;
+            };
+
+            return await Task.Run(GetAllAsync);
         }
 
-        public Task<Publisher> GetById(int id)
+        public async Task<PublisherDTO> GetById(int id)
         {
-            return _publisherRepository.GetSingleByIdAsync(id);
+            Func<Task<PublisherDTO>> GetByIdAsync = async () => {
+                Publisher authorFound = await _publisherRepository.GetSingleByIdAsync(id);
+                return _mapper.Map<Publisher, PublisherDTO>(authorFound);
+            };
+
+            return await Task.Run(GetByIdAsync);
         }
 
         public Task SaveToDb()
@@ -95,9 +146,15 @@ namespace INT1448.Application.Services
             return await Task.Run(() => SortAsync());
         }
 
-        public async Task Update(Publisher publisher)
+        public async Task Update(PublisherDTO publisherDto)
         {
-            await _publisherRepository.UpdateAsync(publisher);
+            Func<Task> UpdateAsync = async () => {
+
+                Publisher authorUpdate = _mapper.Map<PublisherDTO, Publisher>(publisherDto);
+                await _publisherRepository.UpdateAsync(authorUpdate);
+            };
+
+            await Task.Run(UpdateAsync);
         }
     }
 }

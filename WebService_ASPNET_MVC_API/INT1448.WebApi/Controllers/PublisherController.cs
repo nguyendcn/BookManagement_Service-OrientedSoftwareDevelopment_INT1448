@@ -1,4 +1,5 @@
 ﻿using INT1448.Application.Infrastructure.Core;
+using INT1448.Application.Infrastructure.DTOs;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
@@ -32,7 +33,7 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<Publisher> publishers = await _publisherService.GetAll();
+                IEnumerable<PublisherDTO> publishers = await _publisherService.GetAll();
                 response = requestMessage.CreateResponse(HttpStatusCode.OK, publishers, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
@@ -50,17 +51,17 @@ namespace INT1448.WebApi.Controllers
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
-                Publisher publisher = null;
+                PublisherDTO publisherDto = null;
 
-                publisher = await _publisherService.GetById(id);
+                publisherDto = await _publisherService.GetById(id);
 
-                if (publisher == null)
+                if (publisherDto == null)
                 {
                     var message = new NotificationResponse("true", "Not found.");
                     response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
                     return response;
                 }
-                response = request.CreateResponse(HttpStatusCode.OK, publisher);
+                response = request.CreateResponse(HttpStatusCode.OK, publisherDto);
                 return response;
             };
 
@@ -80,7 +81,7 @@ namespace INT1448.WebApi.Controllers
                 }
                 else
                 {
-                    IEnumerable<Publisher> publishers = await _publisherService.GetAll();
+                    IEnumerable<PublisherDTO> publishers = await _publisherService.GetAll();
                     response = request.CreateResponse(HttpStatusCode.OK, publishers);
                 }
                 return response;
@@ -92,15 +93,15 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(HttpRequestMessage request, Publisher publisher)
+        public async Task<HttpResponseMessage> Update(HttpRequestMessage request, PublisherDTO publisherDto)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbPublisher = await _publisherService.GetById(publisher.ID);
+                var dbPublisher = await _publisherService.GetById(publisherDto.ID);
 
-                await _publisherService.Update(publisher);
+                await _publisherService.Update(publisherDto);
                 await _publisherService.SaveToDb();
 
                 response = request.CreateResponse(HttpStatusCode.OK, dbPublisher);
@@ -114,13 +115,13 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(Publisher publisher, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(PublisherDTO publisherDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                Publisher publisherAdded = await _publisherService.Add(publisher);
+                PublisherDTO publisherAdded = await _publisherService.Add(publisherDto);
                 await _publisherService.SaveToDb();
                 response = request.CreateResponse(HttpStatusCode.OK, publisherAdded);
                 return response;
@@ -139,7 +140,7 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                Publisher publisherDeleted = await _publisherService.Delete(id);
+                PublisherDTO publisherDeleted = await _publisherService.Delete(id);
 
                 await _publisherService.SaveToDb();
                 response = request.CreateResponse(HttpStatusCode.OK, publisherDeleted);
