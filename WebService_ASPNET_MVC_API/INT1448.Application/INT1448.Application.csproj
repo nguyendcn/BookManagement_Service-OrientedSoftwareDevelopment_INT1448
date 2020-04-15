@@ -62,6 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\Core\ApiControllerBase.cs" />
+    <Compile Include="Infrastructure\DTOs\AuthorDTO.cs" />
+    <Compile Include="Infrastructure\DTOs\BookCategoryDTO.cs" />
+    <Compile Include="Infrastructure\DTOs\BookDTO.cs" />
+    <Compile Include="Infrastructure\DTOs\BookImageDTO.cs" />
+    <Compile Include="Infrastructure\DTOs\PublisherDTO.cs" />
     <Compile Include="Infrastructure\Exeptions\INT1448Exception.cs" />
     <Compile Include="IServices\IBookService.cs" />
     <Compile Include="IServices\IAuthorService.cs" />
