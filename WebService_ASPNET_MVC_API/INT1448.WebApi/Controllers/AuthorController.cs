@@ -1,4 +1,6 @@
-﻿using INT1448.Application.Infrastructure.Core;
+﻿using AutoMapper;
+using INT1448.Application.Infrastructure.Core;
+using INT1448.Application.Infrastructure.DTOs;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
@@ -17,10 +19,12 @@ namespace INT1448.WebApi.Controllers
     public class AuthorController : ApiControllerBase
     {
         private IAuthorService _authorService;
+        private readonly IMapper _mapper;
 
-        public AuthorController(IAuthorService authorService)
+        public AuthorController(IAuthorService authorService, IMapper mapper)
         {
             this._authorService = authorService;
+            this._mapper = mapper;
         }
 
         [Route("getall")]
@@ -33,7 +37,15 @@ namespace INT1448.WebApi.Controllers
                 HttpResponseMessage response = null;
 
                 IEnumerable<Author> authors = await _authorService.GetAll();
-                response = requestMessage.CreateResponse(HttpStatusCode.OK, authors, JsonMediaTypeFormatter.DefaultMediaType);
+
+                List<AuthorDTO> authorDTOs = new List<AuthorDTO>();
+
+                foreach(Author a in authors)
+                {
+                    authorDTOs.Add( _mapper.Map<Author, AuthorDTO>(a));
+                }
+
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, authorDTOs, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
             };

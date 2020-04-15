@@ -4,6 +4,7 @@ using INT1448.Application.Services;
 using INT1448.EntityFramework;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
 using INT1448.EntityFramework.EntityFramework.Repositories;
+using INT1448.WebApi.AutoMapper;
 using System.Linq;
 using System.Reflection;
 using System.Web.Http;
@@ -32,6 +33,9 @@ namespace INT1448.WebApi.App_Start
             builder.RegisterAssemblyTypes(typeof(PublisherService).Assembly)
                .Where(t => t.Name.EndsWith("Service"))
                .AsImplementedInterfaces().InstancePerRequest();
+
+            //// Auto Mapper
+            builder.RegisterModule(new AutoMapperModule());
 
             var container = builder.Build();
             var resolver = new AutofacWebApiDependencyResolver(container);
