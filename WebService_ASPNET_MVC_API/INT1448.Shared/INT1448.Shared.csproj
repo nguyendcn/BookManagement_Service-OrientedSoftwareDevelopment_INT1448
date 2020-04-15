@@ -78,6 +78,7 @@
     <Compile Include="CommonType\NotificationResponse.cs" />
     <Compile Include="CommonType\ParameterError.cs" />
     <Compile Include="Exceptions\INT1448Exception.cs" />
+    <Compile Include="Extensions\IEnumerableExtension.cs" />
     <Compile Include="Filters\IDFilterAttribute.cs" />
     <Compile Include="Filters\ImageFilterAttribute.cs" />
     <Compile Include="Filters\ValidateModelAttribute.cs" />

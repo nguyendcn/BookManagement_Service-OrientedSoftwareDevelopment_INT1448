@@ -1,4 +1,5 @@
-﻿using INT1448.Core.Models;
+﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,19 @@ namespace INT1448.Application.IServices
 {
     public interface IAuthorService
     {
-        Task<Author> Add(Author author);
+        Task<AuthorDTO> Add(AuthorDTO author);
 
-        Task Update(Author author);
+        Task Update(AuthorDTO author);
 
-        Task<Author> Delete(int id);
+        Task<AuthorDTO> Delete(int id);
 
-        Task<Author> Delete(Author author);
+        Task<AuthorDTO> Delete(AuthorDTO author);
 
-        Task<Author> GetById(int id);
+        Task<AuthorDTO> GetById(int id);
 
-        Task<IEnumerable<Author>> GetAll();
+        Task<IEnumerable<AuthorDTO>> GetAll();
 
-        Task<IEnumerable<Author>> GetAll(string keyword);
+        Task<IEnumerable<AuthorDTO>> GetAll(string keyword);
 
         Task SaveToDb();
     }
