@@ -1,4 +1,5 @@
 ﻿using INT1448.Application.Infrastructure.Core;
+using INT1448.Application.Infrastructure.DTOs;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
@@ -32,8 +33,8 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                IEnumerable<BookCategory> bookCategories = await _bookCategoryService.GetAll();
-                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookCategories, JsonMediaTypeFormatter.DefaultMediaType);
+                IEnumerable<BookCategoryDTO> bookCategoriesDto = await _bookCategoryService.GetAll();
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookCategoriesDto, JsonMediaTypeFormatter.DefaultMediaType);
 
                 return response;
             };
@@ -50,17 +51,17 @@ namespace INT1448.WebApi.Controllers
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
-                BookCategory bookCategory = null;
+                BookCategoryDTO bookCategorieDto = null;
 
-                bookCategory = await _bookCategoryService.GetById(id);
+                bookCategorieDto = await _bookCategoryService.GetById(id);
 
-                if (bookCategory == null)
+                if (bookCategorieDto == null)
                 {
                     var message = new NotificationResponse("true", "Not found.");
                     response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
                     return response;
                 }
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategory);
+                response = request.CreateResponse(HttpStatusCode.OK, bookCategorieDto);
                 return response;
             };
 
@@ -80,8 +81,8 @@ namespace INT1448.WebApi.Controllers
                 }
                 else
                 {
-                    IEnumerable<BookCategory> bookCategories = await _bookCategoryService.GetAll();
-                    response = request.CreateResponse(HttpStatusCode.OK, bookCategories);
+                    IEnumerable<BookCategoryDTO> bookCategoriesDto = await _bookCategoryService.GetAll();
+                    response = request.CreateResponse(HttpStatusCode.OK, bookCategoriesDto);
                 }
                 return response;
             };
@@ -92,15 +93,15 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(BookCategory bookCategory, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Update(BookCategoryDTO bookCategoryDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbBookCategory = await _bookCategoryService.GetById(bookCategory.ID);
+                var dbBookCategory = await _bookCategoryService.GetById(bookCategoryDto.ID);
 
-                await _bookCategoryService.Update(bookCategory);
+                await _bookCategoryService.Update(bookCategoryDto);
                 await _bookCategoryService.SaveToDb();
 
                 response = request.CreateResponse(HttpStatusCode.OK, dbBookCategory);
@@ -114,15 +115,15 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(BookCategory bookCategory, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(BookCategoryDTO bookCategoryDto, HttpRequestMessage request = null)
         {
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                BookCategory bookCategoryAdded = await _bookCategoryService.Add(bookCategory);
+                BookCategoryDTO bookCategoryDtoAdded = await _bookCategoryService.Add(bookCategoryDto);
                 await _bookCategoryService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryAdded);
+                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDtoAdded);
                 return response;
             };
 
@@ -139,10 +140,10 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                BookCategory bookCategoryDeleted = await _bookCategoryService.Delete(id);
+                BookCategoryDTO bookCategoryDtoDeleted = await _bookCategoryService.Delete(id);
 
                 await _bookCategoryService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDeleted);
+                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDtoDeleted);
 
                 return response;
             };

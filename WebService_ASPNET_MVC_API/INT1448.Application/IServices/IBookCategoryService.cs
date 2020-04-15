@@ -1,4 +1,5 @@
-﻿using INT1448.Core.Models;
+﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,19 @@ namespace INT1448.Application.IServices
 {
     public interface IBookCategoryService
     {
-        Task<BookCategory> Add(BookCategory bookCategory);
+        Task<BookCategoryDTO> Add(BookCategoryDTO bookCategoryDto);
 
-        Task Update(BookCategory bookCategory);
+        Task Update(BookCategoryDTO bookCategoryDto);
 
-        Task<BookCategory> Delete(int id);
+        Task<BookCategoryDTO> Delete(int id);
 
-        Task<BookCategory> Delete(BookCategory bookCategory);
+        Task<BookCategoryDTO> Delete(BookCategoryDTO bookCategoryDto);
 
-        Task<BookCategory> GetById(int id);
+        Task<BookCategoryDTO> GetById(int id);
 
-        Task<IEnumerable<BookCategory>> GetAll();
+        Task<IEnumerable<BookCategoryDTO>> GetAll();
 
-        Task<IEnumerable<BookCategory>> GetAll(string keyword);
+        Task<IEnumerable<BookCategoryDTO>> GetAll(string keyword);
 
         Task SaveToDb();
     }

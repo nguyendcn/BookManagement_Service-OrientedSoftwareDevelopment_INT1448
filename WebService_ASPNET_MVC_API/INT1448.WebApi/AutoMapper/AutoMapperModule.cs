@@ -15,6 +15,9 @@ namespace INT1448.WebApi.AutoMapper
         protected override void Configure()
         {
             CreateMap<Author, AuthorDTO>();
+            CreateMap<AuthorDTO, Author>();
+            CreateMap<BookCategory, BookCategoryDTO>();
+            CreateMap<BookCategoryDTO, BookCategory>();
         }
     }
 
