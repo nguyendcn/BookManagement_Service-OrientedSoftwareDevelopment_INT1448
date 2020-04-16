@@ -8,10 +8,12 @@ namespace INT1448.Core.Models
     {
         [Key]
         [Column(Order = 1)]
+        [Required]
         public int BookID { set; get; }
 
         [Key]
         [Column(Order = 2)]
+        [Required]
         public int AuthorID { set; get; }
 
         [ForeignKey("BookID")]

@@ -7,6 +7,7 @@ using INT1448.EntityFramework.EntityFramework.Repositories;
 using INT1448.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -104,6 +105,16 @@ namespace INT1448.Application.Services
         {
             Func<Task<BookDTO>> GetByIdAsync = async () => {
                 Book bookFound = await _bookRepository.GetSingleByIdAsync(id);
+                Debug.WriteLine("bookFound Info");
+                Debug.WriteLine($"    Name: {bookFound.Name}");
+                Debug.WriteLine($"    Publisher Name: {bookFound.Publisher.Name}");
+                Debug.WriteLine($"    Book Author Info:");
+                foreach (BookAuthor bookAuthor in bookFound.BookAuthors)
+                {
+                    Debug.WriteLine($"        Book Author ID: {bookAuthor.AuthorID}");
+                    Debug.WriteLine($"        Book Author Name: {bookAuthor.Author.FullName}");
+                }
+                
                 return _mapper.Map<Book, BookDTO>(bookFound);
             };
 

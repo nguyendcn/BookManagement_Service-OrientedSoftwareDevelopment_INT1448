@@ -88,6 +88,7 @@
     <Compile Include="Models\BookImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Publisher.cs" />
+    <Compile Include="ViewModels\BookViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

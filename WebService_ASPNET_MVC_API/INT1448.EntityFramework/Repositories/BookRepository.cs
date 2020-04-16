@@ -21,5 +21,20 @@ namespace INT1448.EntityFramework.EntityFramework.Repositories
         {
 
         }
+
+        public override async Task<Book> GetSingleByIdAsync(int id)
+        {
+            Func<Task<Book>> Get = async () =>
+            {
+                Book book = await base.GetSingleByIdAsync(id);
+
+                //this.DbContext.Entry(book).Reference(b => b.BookAuthors).Load();
+                this.DbContext.Entry(book).ComplexProperty("");
+
+                return book;
+            };
+
+            return await Task.Run(Get);
+        }
     }
 }

@@ -26,6 +26,6 @@ namespace INT1448.Core.Models
         [MaxLength(500)]
         public string Address { set; get; }
 
-        public virtual IEnumerable<Book> Books { set; get; }
+        public virtual ICollection<Book> Books { set; get; }
     }
 }
