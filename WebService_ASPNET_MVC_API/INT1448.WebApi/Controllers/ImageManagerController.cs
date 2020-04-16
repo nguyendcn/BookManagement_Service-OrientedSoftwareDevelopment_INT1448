@@ -1,9 +1,12 @@
-﻿using INT1448.Application.Storage;
+﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.IServices;
+using INT1448.Application.Storage;
 using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
@@ -13,15 +16,17 @@ namespace INT1448.WebApi.Controllers
     public class ImageManagerController : ApiController
     {
         private IStorageService _storageService;
+        private IBookImageManagerService _bookImageManagerService;
 
-        public ImageManagerController(IStorageService storageService)
+        public ImageManagerController(IStorageService storageService, IBookImageManagerService bookImageManagerService)
         {
             _storageService = storageService;
+            _bookImageManagerService = bookImageManagerService;
         }
 
         [HttpPost]
         [ImageFilterAttribute]
-        public HttpResponseMessage PostImage()
+        public async Task<HttpResponseMessage> PostImage()
         {
             List<string> fileAdded = new List<string>();
             Dictionary<string, object> dict = new Dictionary<string, object>();
@@ -50,8 +55,20 @@ namespace INT1448.WebApi.Controllers
                         //  where you want to attach your imageurl
 
                         //if needed write the code to update the table
+                        BookImageDTO bookImageDTO = new BookImageDTO()
+                        {
+                            BookId = 1,
+                            DateCreated = DateTime.Now,
+                            Caption = "sorry my mistake",
+                            FileSize = postedFile.ContentLength,
+                            IsDefault = true,
+                            SortOrder = 1,
+                            ImagePath = $"{_storageService.GetFileUrl(myImageFileName)}"
+                        };
+                        await _bookImageManagerService.Add(bookImageDTO);
+                        await _bookImageManagerService.SaveToDb();
 
-                        _storageService.SaveFileAsync(postedFile.InputStream, myImageFileName);
+                        await _storageService.SaveFileAsync(postedFile.InputStream, myImageFileName);
                         fileAdded.Add(myImageFileName);
                     }
                 }
@@ -64,7 +81,7 @@ namespace INT1448.WebApi.Controllers
                 {
                     foreach (string filename in fileAdded)
                     {
-                        _storageService.DeleteFileAsync(filename);
+                        await _storageService.DeleteFileAsync(filename);
                     }
                 }
 

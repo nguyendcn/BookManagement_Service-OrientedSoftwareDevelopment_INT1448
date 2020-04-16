@@ -96,6 +96,7 @@
     <Compile Include="Repositories\AuthorRepository.cs" />
     <Compile Include="Repositories\BookAuthorRepository.cs" />
     <Compile Include="Repositories\BookCategoryRepository.cs" />
+    <Compile Include="Repositories\BookImageManagerRepository.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\PublisherRepository.cs" />
   </ItemGroup>

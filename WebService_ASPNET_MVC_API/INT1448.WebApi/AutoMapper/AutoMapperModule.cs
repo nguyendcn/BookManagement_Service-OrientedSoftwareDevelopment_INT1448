@@ -24,6 +24,8 @@ namespace INT1448.WebApi.AutoMapper
             CreateMap<BookDTO, Book>();
             CreateMap<BookAuthor, BookAuthorDTO>();
             CreateMap<BookAuthorDTO, BookAuthor>();
+            CreateMap<BookImage, BookImageDTO>();
+            CreateMap<BookImageDTO, BookImage>();
         }
     }
 
