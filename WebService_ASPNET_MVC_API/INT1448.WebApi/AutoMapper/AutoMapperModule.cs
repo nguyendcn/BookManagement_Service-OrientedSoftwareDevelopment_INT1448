@@ -1,11 +1,10 @@
 ﻿using Autofac;
 using AutoMapper;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace INT1448.WebApi.AutoMapper
 {
@@ -26,6 +25,8 @@ namespace INT1448.WebApi.AutoMapper
             CreateMap<BookAuthorDTO, BookAuthor>();
             CreateMap<BookImage, BookImageDTO>();
             CreateMap<BookImageDTO, BookImage>();
+
+            CreateMap<Book, BookViewModel>();
         }
     }
 

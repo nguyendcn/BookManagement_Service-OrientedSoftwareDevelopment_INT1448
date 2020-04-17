@@ -43,6 +43,6 @@ namespace INT1448.Core.Models
 
         public virtual ICollection<BookAuthor> BookAuthors { get; set; }
 
-        public virtual ICollection<BookImage> ProductImages { get; set; }
+        public virtual ICollection<BookImage> BookImages { get; set; }
     }
 }

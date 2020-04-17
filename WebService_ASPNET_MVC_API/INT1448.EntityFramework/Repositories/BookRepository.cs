@@ -29,7 +29,7 @@ namespace INT1448.EntityFramework.EntityFramework.Repositories
                 Book book = await base.GetSingleByIdAsync(id);
 
                 //this.DbContext.Entry(book).Reference(b => b.BookAuthors).Load();
-                this.DbContext.Entry(book).ComplexProperty("");
+                //this.DbContext.Entry(book).ComplexProperty("");
 
                 return book;
             };

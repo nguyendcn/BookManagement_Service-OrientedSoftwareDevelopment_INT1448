@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
@@ -7,23 +8,25 @@ using INT1448.EntityFramework.EntityFramework.Repositories;
 using INT1448.Shared.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace INT1448.Application.Services
 {
-    public class BookService : IBookService
+    public class BookService : ConvertToViewModel<Book, BookViewModel>, IBookService
     {
         private IBookRepository _bookRepository;
+        private IBookImageManagerService _bookImageManagerService;
         private IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
-        public BookService(IBookRepository bookRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public BookService(IBookRepository bookRepository,
+            IBookImageManagerService bookImageManagerService,
+            IUnitOfWork unitOfWork, IMapper mapper, IDbFactory dbFactory)
+            : base(dbFactory, mapper)
         {
             this._bookRepository = bookRepository;
+            this._bookImageManagerService = bookImageManagerService;
             this._unitOfWork = unitOfWork;
             this._mapper = mapper;
         }
@@ -105,17 +108,10 @@ namespace INT1448.Application.Services
         {
             Func<Task<BookDTO>> GetByIdAsync = async () => {
                 Book bookFound = await _bookRepository.GetSingleByIdAsync(id);
-                Debug.WriteLine("bookFound Info");
-                Debug.WriteLine($"    Name: {bookFound.Name}");
-                Debug.WriteLine($"    Publisher Name: {bookFound.Publisher.Name}");
-                Debug.WriteLine($"    Book Author Info:");
-                foreach (BookAuthor bookAuthor in bookFound.BookAuthors)
-                {
-                    Debug.WriteLine($"        Book Author ID: {bookAuthor.AuthorID}");
-                    Debug.WriteLine($"        Book Author Name: {bookAuthor.Author.FullName}");
-                }
-                
-                return _mapper.Map<Book, BookDTO>(bookFound);
+                BookDTO bookDTO = _mapper.Map<Book, BookDTO>(bookFound);
+                //bookDTO.ImagesUrl = await _bookImageManagerService.GetAllByBookId(id);
+
+                return bookDTO;
             };
 
             return await Task.Run(GetByIdAsync);

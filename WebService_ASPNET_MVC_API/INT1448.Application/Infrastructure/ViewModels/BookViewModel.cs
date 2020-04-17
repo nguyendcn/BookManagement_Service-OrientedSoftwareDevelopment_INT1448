@@ -1,10 +1,8 @@
-﻿using System;
+﻿using INT1448.Application.Infrastructure.DTOs;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace INT1448.Core.ViewModels
+namespace INT1448.Application.Infrastructure.ViewModels
 {
     public class BookViewModel
     {
@@ -18,10 +16,10 @@ namespace INT1448.Core.ViewModels
 
         public int Retail { get; set; }
 
-        public string CategoryName { set; get; }
+        public string BookCategoryName { set; get; }
 
         public string PublisherName { get; set; }
 
-        public IEnumerable<string> Images { get; set; }
+        public IEnumerable<BookImageDTO> BookImages { get; set; }
     }
 }

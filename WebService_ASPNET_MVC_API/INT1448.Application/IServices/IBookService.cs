@@ -1,4 +1,5 @@
 ﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace INT1448.Application.IServices
 {
-    public interface IBookService
+    public interface IBookService : IConvertToViewModel<Book, BookViewModel>
     {
         Task<BookDTO> Add(BookDTO bookDto);
 

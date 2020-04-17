@@ -1,7 +1,7 @@
 ﻿using INT1448.Application.Infrastructure.Core;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Application.IServices;
-using INT1448.Core.Models;
 using INT1448.Shared.CommonType;
 using INT1448.Shared.Filters;
 using System;
@@ -44,6 +44,27 @@ namespace INT1448.WebApi.Controllers
             return await CreateHttpResponseAsync(requestMessage, HandleRequest);
         }
 
+        [Route("getalltoview")]
+        [HttpGet]
+        [ValidateModelAttribute]
+        public async Task<HttpResponseMessage> GetAllToView()
+        {
+            HttpRequestMessage requestMessage = this.Request;
+            
+            Func<Task<HttpResponseMessage>> HandleRequest = async () =>
+            {
+                HttpResponseMessage response = null;
+
+                IEnumerable<BookViewModel> bookDtos = await _bookService.GetAllToView();
+
+                response = requestMessage.CreateResponse(HttpStatusCode.OK, bookDtos, JsonMediaTypeFormatter.DefaultMediaType);
+
+                return response;
+            };
+
+            return await CreateHttpResponseAsync(requestMessage, HandleRequest);
+        }
+
         [Route("getbyid/{id:int}")]
         [HttpGet]
         [ValidateModelAttribute]
@@ -56,6 +77,34 @@ namespace INT1448.WebApi.Controllers
                 BookDTO bookDto = null;
 
                 bookDto = await _bookService.GetById(id);
+
+                if (bookDto == null)
+                {
+                    var message = new NotificationResponse("true", "Not found.");
+                    response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
+                    return response;
+                }
+                response = request.CreateResponse(HttpStatusCode.OK, bookDto);
+                return response;
+            };
+
+            return await CreateHttpResponseAsync(request, HandleRequest);
+        }
+
+        [Route("getbyidtoview/{id:int}")]
+        [HttpGet]
+        [ValidateModelAttribute]
+        [IDFilterAttribute]
+        public async Task<HttpResponseMessage> GetByIdToView(int id)
+        {
+            HttpRequestMessage request = this.Request;
+
+            Func<Task<HttpResponseMessage>> HandleRequest = async () =>
+            {
+                HttpResponseMessage response = null;
+                BookViewModel bookDto = null;
+
+                bookDto = await _bookService.GetByIdToView(id);
 
                 if (bookDto == null)
                 {

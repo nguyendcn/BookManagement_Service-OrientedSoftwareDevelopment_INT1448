@@ -21,5 +21,7 @@ namespace INT1448.Application.Infrastructure.DTOs
         public int CategoryID { set; get; }
 
         public int PublisherID { get; set; }
+
+        public IEnumerable<BookImageDTO> BookImages { get; set; }
     }
 }
