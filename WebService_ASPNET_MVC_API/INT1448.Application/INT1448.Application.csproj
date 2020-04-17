@@ -72,6 +72,8 @@
     <Compile Include="Infrastructure\DTOs\BookImageDTO.cs" />
     <Compile Include="Infrastructure\DTOs\PublisherDTO.cs" />
     <Compile Include="Infrastructure\Exeptions\INT1448Exception.cs" />
+    <Compile Include="Infrastructure\Requests\BookInfoRequestMessage.cs" />
+    <Compile Include="Infrastructure\Requests\BookRequestCreate.cs" />
     <Compile Include="Infrastructure\ViewModels\BookViewModel.cs" />
     <Compile Include="IServices\IBookImageManagerService.cs" />
     <Compile Include="IServices\IBookService.cs" />
@@ -89,7 +91,9 @@
     <Compile Include="Services\ConvertToViewModel.cs" />
     <Compile Include="Services\PublisherService.cs" />
     <Compile Include="Storage\FileStorageService.cs" />
+    <Compile Include="Storage\IManageBookImageService.cs" />
     <Compile Include="Storage\IStorageService.cs" />
+    <Compile Include="Storage\ManageBookImageService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -112,6 +116,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

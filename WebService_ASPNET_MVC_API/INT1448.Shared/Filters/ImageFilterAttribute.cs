@@ -20,6 +20,7 @@ namespace INT1448.Shared.Filters
                 if (actionContext.Request.Content.IsMimeMultipartContent())
                 {
                     var provider = actionContext.Request.Content.ReadAsMultipartAsync(cancellationToken).Result;
+
                     foreach (var content in provider.Contents)
                     {
                         //Here logic to check extension, magic number and length.

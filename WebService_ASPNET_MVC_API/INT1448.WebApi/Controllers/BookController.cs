@@ -1,16 +1,22 @@
-﻿using INT1448.Application.Infrastructure.Core;
+﻿using AutoMapper;
+using INT1448.Application.Infrastructure.Core;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.Requests;
 using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Application.IServices;
+using INT1448.Application.Storage;
 using INT1448.Shared.CommonType;
 using INT1448.Shared.Filters;
+using INT1448.Shared.UploadDocs;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace INT1448.WebApi.Controllers
@@ -19,10 +25,14 @@ namespace INT1448.WebApi.Controllers
     public class BookController : ApiControllerBase
     {
         private IBookService _bookService;
+        private IManageBookImageService _manageBookImageService;
+        private IMapper _mapper;
 
-        public BookController(IBookService bookService)
+        public BookController(IBookService bookService, IManageBookImageService manageBookImageService, IMapper mapper)
         {
             this._bookService = bookService;
+            this._manageBookImageService = manageBookImageService;
+            this._mapper = mapper;
         }
 
         [Route("getall")]
@@ -144,16 +154,34 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(BookDTO bookDto, HttpRequestMessage request = null)
+        [ValidateIMMCAttribute]
+        public async Task<HttpResponseMessage> Create()
         {
+            HttpRequestMessage request = this.Request;
+
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                BookDTO bookDtoAdded = await _bookService.Add(bookDto);
-                await _bookService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookDtoAdded);
-                return response;
+                //BookDTO bookDto = _mapper.Map<BookRequestCreate, BookDTO>(bookInfo);
+
+                //BookDTO bookDtoAdded = await _bookService.Add(bookDto);
+
+                //await _manageBookImageService.SaveImage(HttpContext.Current.Request, bookDtoAdded.ID);
+
+                //await _bookService.SaveToDb();
+
+                var provider = await Request.Content.ReadAsMultipartAsync<InMemoryMultipartFormDataStreamProvider>(new InMemoryMultipartFormDataStreamProvider());
+                //access form data  
+                NameValueCollection formData = provider.FormData;
+                //var json = await formData.GetValues.Contents[0].ReadAsStringAsync();
+                //access files  
+                IList<HttpContent> files = provider.Files;
+
+                await _manageBookImageService.SaveImage(files, 1);
+
+                response = request.CreateResponse(HttpStatusCode.OK, "Nguyenne");
+                    return response;
             };
 
             return await CreateHttpResponseAsync(request, HandleRequest);
