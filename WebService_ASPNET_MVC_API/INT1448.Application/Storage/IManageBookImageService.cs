@@ -9,5 +9,7 @@ namespace INT1448.Application.Storage
         Task SaveImage(IList<HttpContent> files, int bookId);
 
         Task DeleteByBookId(int bookId);
+
+        Task DeleteMulti(IEnumerable<string> fileNames);
     }
 }

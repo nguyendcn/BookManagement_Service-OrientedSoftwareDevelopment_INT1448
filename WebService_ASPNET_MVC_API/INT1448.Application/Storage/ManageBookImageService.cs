@@ -70,7 +70,19 @@ namespace INT1448.Application.Storage
             foreach(BookImageDTO book in bookImageDTOs)
             {
                await _storageService.DeleteFileAsync(book.ImagePath.Substring(book.ImagePath.LastIndexOf("/") + 1));
-            }
+            
+}
+        }
+
+        public async Task DeleteMulti(IEnumerable<string> fileNames)
+        {
+            await Task.Run(async () => {
+                foreach (string fileName in fileNames)
+                {
+                    await _storageService.DeleteFileAsync(fileName);
+                }
+            });
+            
         }
     }
 }

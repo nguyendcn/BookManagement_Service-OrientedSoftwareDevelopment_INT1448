@@ -54,7 +54,7 @@ namespace INT1448.Application.Services
             Func<Task<BookImageDTO>> DeleteAsync = async () => {
 
                 BookImage authorDelete = _mapper.Map<BookImageDTO, BookImage>(bookImageDto);
-                BookImage authorDeleted = await _bookImageManagerRepository.AddAsync(authorDelete);
+                BookImage authorDeleted = await _bookImageManagerRepository.DeleteAsync(authorDelete);
                 return _mapper.Map<BookImage, BookImageDTO>(authorDeleted);
             };
 
@@ -90,12 +90,15 @@ namespace INT1448.Application.Services
         {
             Func<Task<IEnumerable<BookImageDTO>>> GetAllAsync = async () => {
 
-                IEnumerable<BookImage> authorFound = await _bookImageManagerRepository.GetMultiAsync(x=> x.BookId == bookId);
+                IEnumerable<BookImage> bookImageFound = await _bookImageManagerRepository.GetMultiAsync(x=> x.BookId == bookId);
 
-                IEnumerable<BookImageDTO> authorDTOs = authorFound.ForEach<BookImage, BookImageDTO>((item) => {
-                    return _mapper.Map<BookImage, BookImageDTO>(item);
-                });
-                return authorDTOs;
+                IList<BookImageDTO> bookImageDTOs = new List<BookImageDTO>();
+                foreach(BookImage bi in bookImageFound)
+                {
+                    bookImageDTOs.Add(_mapper.Map<BookImage, BookImageDTO>(bi));
+                }
+
+                return bookImageDTOs;
             };
 
             return await Task.Run(GetAllAsync);

@@ -72,8 +72,7 @@
     <Compile Include="Infrastructure\DTOs\BookImageDTO.cs" />
     <Compile Include="Infrastructure\DTOs\PublisherDTO.cs" />
     <Compile Include="Infrastructure\Exeptions\INT1448Exception.cs" />
-    <Compile Include="Infrastructure\Requests\BookInfoRequestMessage.cs" />
-    <Compile Include="Infrastructure\Requests\BookRequestCreate.cs" />
+    <Compile Include="Infrastructure\Requests\BookRequestUpdate.cs" />
     <Compile Include="Infrastructure\ViewModels\BookViewModel.cs" />
     <Compile Include="IServices\IBookImageManagerService.cs" />
     <Compile Include="IServices\IBookService.cs" />

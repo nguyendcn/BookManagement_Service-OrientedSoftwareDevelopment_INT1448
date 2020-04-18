@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
+using System.Linq;
 
 namespace INT1448.WebApi.Controllers
 {
@@ -138,20 +139,53 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(HttpRequestMessage request, BookDTO bookDto)
+        [ValidateIMMCAttribute]
+        public async Task<HttpResponseMessage> Update()
         {
+            HttpRequestMessage request = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
-                var dbBook = await _bookService.GetById(bookDto.ID);
+                InMemoryMultipartFormDataStreamProvider provider = await Request.Content.ReadAsMultipartAsync<InMemoryMultipartFormDataStreamProvider>(new InMemoryMultipartFormDataStreamProvider());
+                //access form data  
+                NameValueCollection formData = provider.FormData;
+                var json = formData.GetValues(formData.AllKeys[0]);
 
-                await _bookService.Update(bookDto);
-                await _bookService.SaveToDb();
+                BookRequestUpdate bookRequest = new JavaScriptSerializer().Deserialize<BookRequestUpdate>(json[0]);
+                BookDTO bookUpdate = _mapper.Map<BookRequestUpdate, BookDTO>(bookRequest);
 
-                response = request.CreateResponse(HttpStatusCode.OK, dbBook);
+                await _bookService.Update(bookUpdate);
 
-                return response;
+                if (!bookRequest.ImageStatus.IsModified)
+                {
+                    response = request.CreateResponse(HttpStatusCode.OK, bookUpdate);
+                    return response;
+                }
+                else
+                {
+                    ImageStatus imageStatus = bookRequest.ImageStatus;
+
+                    //access files  
+                    IList<HttpContent> files = provider.Files;
+
+                    switch (imageStatus.ModifyType)
+                    {
+                        case ModifyType.DELETED :
+                            await HandlingUpdateFileIsDeleted(imageStatus.ImageIdModified, bookRequest.Id);
+                            break;
+                        case ModifyType.INSERTED:
+                            await HandlingUpdateFileIsInsert(files, bookRequest.Id);
+                            break;
+                        case ModifyType.INSERTED_DELETED:
+                            await HandlingUpdateFileIsInsertDelete(imageStatus.ImageIdModified, files, bookRequest.Id);
+                            break;
+                        default:
+                            break;
+                    }
+                    response = request.CreateResponse(HttpStatusCode.OK, new string[] { "Success: true", "Message: Update book success!" });
+                    return response;
+                }  
             };
 
             return await CreateHttpResponseAsync(request, HandleRequest);
@@ -175,6 +209,7 @@ namespace INT1448.WebApi.Controllers
                 var json = formData.GetValues(formData.AllKeys[0]);
 
                 BookDTO book = new JavaScriptSerializer().Deserialize<BookDTO>(json[0]);
+          
                 BookDTO bookAdded = await _bookService.Add(book);
 
                 //access files  
@@ -217,5 +252,60 @@ namespace INT1448.WebApi.Controllers
 
             return await CreateHttpResponseAsync(request, HandleRequest);
         }
+
+        #region Function support
+
+        private async Task HandlingUpdateFileIsDeleted(IEnumerable<int> idDeleteds, int bookId)
+        {
+            Func<Task> Handling = async () =>
+            {
+
+
+                var bookImage = await _bookImageManagerService.GetAllByBookId(bookId);
+
+                var bookImageToDelete = from src in bookImage
+                                        join del in idDeleteds
+                                        on src.Id equals del
+                                        select src;
+
+                //Delete file in explore
+                await _manageBookImageService.DeleteMulti(
+                    bookImageToDelete.Select(t => (
+                    t.ImagePath.Substring(t.ImagePath.LastIndexOf("/") + 1))
+                    )
+                );
+
+                //Delete in database
+                foreach (var b in bookImageToDelete)
+                {
+                    await _bookImageManagerService.Delete(b.Id);
+                }
+
+                await _bookImageManagerService.SaveToDb();
+            };
+
+            await Task.Run(Handling);
+        }
+
+        private async Task HandlingUpdateFileIsInsert(IList<HttpContent> files, int bookId)
+        {
+            await Task.Run(async () =>
+            {
+                await _manageBookImageService.SaveImage(files, bookId);
+            });
+        }
+
+        private async Task HandlingUpdateFileIsInsertDelete(IEnumerable<int> idDeleteds, IList<HttpContent> files, int bookId)
+        {
+            await Task.Run(async () =>
+            {
+                await HandlingUpdateFileIsDeleted(idDeleteds, bookId);
+
+                await HandlingUpdateFileIsInsert(files, bookId);
+
+            });
+        }
+
+        #endregion
     }
 }

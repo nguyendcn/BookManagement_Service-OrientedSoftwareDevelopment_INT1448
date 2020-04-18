@@ -8,6 +8,7 @@ namespace INT1448.Shared.CommonType
 {
     public enum ModifyType
     {
+        NONE = 0,
         INSERTED = 3,
         DELETED = 1,
         INSERTED_DELETED =2

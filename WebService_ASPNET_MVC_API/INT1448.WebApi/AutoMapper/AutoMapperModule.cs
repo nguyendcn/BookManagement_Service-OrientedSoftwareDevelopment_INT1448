@@ -28,8 +28,8 @@ namespace INT1448.WebApi.AutoMapper
             CreateMap<BookImageDTO, BookImage>();
 
             CreateMap<Book, BookViewModel>();
-            CreateMap<BookRequestCreate, BookDTO>().
-                ForMember(c => c.PubDate,  opt => opt.UseValue(DateTime.Now));
+
+            CreateMap<BookRequestUpdate, BookDTO>();
         }
     }
 
