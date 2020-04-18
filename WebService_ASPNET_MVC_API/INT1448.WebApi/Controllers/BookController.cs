@@ -18,6 +18,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 
 namespace INT1448.WebApi.Controllers
 {
@@ -26,12 +27,17 @@ namespace INT1448.WebApi.Controllers
     {
         private IBookService _bookService;
         private IManageBookImageService _manageBookImageService;
+        private IBookImageManagerService _bookImageManagerService;
         private IMapper _mapper;
 
-        public BookController(IBookService bookService, IManageBookImageService manageBookImageService, IMapper mapper)
+        public BookController(IBookService bookService, 
+            IManageBookImageService manageBookImageService,
+            IBookImageManagerService bookImageManagerService,
+            IMapper mapper)
         {
             this._bookService = bookService;
             this._manageBookImageService = manageBookImageService;
+            this._bookImageManagerService = bookImageManagerService;
             this._mapper = mapper;
         }
 
@@ -163,25 +169,22 @@ namespace INT1448.WebApi.Controllers
             {
                 HttpResponseMessage response = null;
 
-                //BookDTO bookDto = _mapper.Map<BookRequestCreate, BookDTO>(bookInfo);
-
-                //BookDTO bookDtoAdded = await _bookService.Add(bookDto);
-
-                //await _manageBookImageService.SaveImage(HttpContext.Current.Request, bookDtoAdded.ID);
-
-                //await _bookService.SaveToDb();
-
                 var provider = await Request.Content.ReadAsMultipartAsync<InMemoryMultipartFormDataStreamProvider>(new InMemoryMultipartFormDataStreamProvider());
                 //access form data  
                 NameValueCollection formData = provider.FormData;
-                //var json = await formData.GetValues.Contents[0].ReadAsStringAsync();
+                var json = formData.GetValues(formData.AllKeys[0]);
+
+                BookDTO book = new JavaScriptSerializer().Deserialize<BookDTO>(json[0]);
+                BookDTO bookAdded = await _bookService.Add(book);
+
                 //access files  
                 IList<HttpContent> files = provider.Files;
 
-                await _manageBookImageService.SaveImage(files, 1);
+                await _manageBookImageService.SaveImage(files, bookAdded.ID);
 
-                response = request.CreateResponse(HttpStatusCode.OK, "Nguyenne");
-                    return response;
+
+                response = request.CreateResponse(HttpStatusCode.OK, bookAdded);
+                return response;
             };
 
             return await CreateHttpResponseAsync(request, HandleRequest);
@@ -191,15 +194,22 @@ namespace INT1448.WebApi.Controllers
         [HttpDelete]
         [ValidateModelAttribute]
         [IDFilterAttribute]
-        public async Task<HttpResponseMessage> Delete(int id, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Delete(int id)
         {
+            HttpRequestMessage request = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
 
                 BookDTO bookDtoDeleted = await _bookService.Delete(id);
 
+                await _manageBookImageService.DeleteByBookId(id);
+
+                await _bookImageManagerService.DeleteAllByBookId(id);
+
+                await _bookImageManagerService.SaveToDb();
                 await _bookService.SaveToDb();
+
                 response = request.CreateResponse(HttpStatusCode.OK, bookDtoDeleted);
 
                 return response;

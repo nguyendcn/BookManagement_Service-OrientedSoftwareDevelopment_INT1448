@@ -47,7 +47,9 @@ namespace INT1448.EntityFramework.EntityFramework.Infrastructure
                 }
                 try
                 {
-                    return dbSet.Add(entity);
+                    T e = dbSet.Add(entity);
+                    DbContext.SaveChanges();
+                    return e;
                 }
                 catch (Exception ex)
                 {

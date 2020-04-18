@@ -23,6 +23,8 @@ namespace INT1448.Application.IServices
 
         Task<IEnumerable<BookImageDTO>> GetAllByBookId(int bookId);
 
+        Task DeleteAllByBookId(int bookId);
+
         Task SaveToDb();
     }
 }

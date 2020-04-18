@@ -61,6 +61,16 @@ namespace INT1448.Application.Services
             return await Task.Run(DeleteAsync);
         }
 
+        public async Task DeleteAllByBookId(int bookId)
+        {
+            Func<Task> DeleteAsync = async () => {
+
+                await _bookImageManagerRepository.DeleteMultiAsync(b => b.BookId == bookId);
+            };
+
+            await Task.Run(DeleteAsync);
+        }
+
         public async Task<IEnumerable<BookImageDTO>> GetAll()
         {
             Func<Task<IEnumerable<BookImageDTO>>> GetAllAsync = async () => {

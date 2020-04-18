@@ -62,5 +62,15 @@ namespace INT1448.Application.Storage
 
             await Task.Run(Save);
         }
+
+        public async Task DeleteByBookId(int bookId)
+        {
+            IEnumerable<BookImageDTO> bookImageDTOs = await _bookImageManagerService.GetAllByBookId(bookId);
+
+            foreach(BookImageDTO book in bookImageDTOs)
+            {
+               await _storageService.DeleteFileAsync(book.ImagePath.Substring(book.ImagePath.LastIndexOf("/") + 1));
+            }
+        }
     }
 }
