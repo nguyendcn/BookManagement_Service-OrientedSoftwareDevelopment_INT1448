@@ -82,11 +82,8 @@
     <Compile Include="Exceptions\INT1448Exception.cs" />
     <Compile Include="Extensions\IEnumerableExtension.cs" />
     <Compile Include="Filters\IDFilterAttribute.cs" />
-    <Compile Include="Filters\ImageFilterAttribute.cs" />
-    <Compile Include="Filters\ValidateIMMCAttribute.cs" />
     <Compile Include="Filters\ValidateModelAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UploadDocs\InMemoryMultipartFormDataStreamProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

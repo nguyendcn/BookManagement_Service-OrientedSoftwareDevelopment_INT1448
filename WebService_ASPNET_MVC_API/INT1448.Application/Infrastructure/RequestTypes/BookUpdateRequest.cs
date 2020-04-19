@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace INT1448.Application.Infrastructure.DTOs
+namespace INT1448.Application.Infrastructure.RequestTypes
 {
-    public class BookDTO
+    public class BookUpdateRequest
     {
-        public int ID { set; get; }
-
+        public int Id { get; set; }
         public string Name { set; get; }
 
         public DateTime PubDate { get; set; }
@@ -21,5 +20,7 @@ namespace INT1448.Application.Infrastructure.DTOs
         public int CategoryID { set; get; }
 
         public int PublisherID { get; set; }
+
+        public IEnumerable<string> BookImages { get; set; }
     }
 }

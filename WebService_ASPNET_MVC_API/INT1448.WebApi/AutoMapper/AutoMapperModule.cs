@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
 using INT1448.Application.Infrastructure.DTOs;
-using INT1448.Application.Infrastructure.Requests;
 using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Core.Models;
 using System;
@@ -27,7 +26,7 @@ namespace INT1448.WebApi.AutoMapper
             CreateMap<BookImage, BookImageDTO>();
             CreateMap<BookImageDTO, BookImage>();
 
-            CreateMap<Book, BookViewModel>();
+            CreateMap<Book, BookViewModel>().ForMember(x=>x.Images, opt => opt.MapFrom(x => x.BookImages));
 
             CreateMap<BookRequestUpdate, BookDTO>();
         }

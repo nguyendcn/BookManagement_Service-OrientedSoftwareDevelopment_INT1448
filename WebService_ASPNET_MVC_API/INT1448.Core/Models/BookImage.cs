@@ -22,19 +22,6 @@ namespace INT1448.Core.Models
         [MaxLength(500)]
         public string ImagePath { get; set; }
 
-        [Required]
-        [DataType("NVARCHAR")]
-        [MaxLength(500)]
-        public string Caption { get; set; }
-
-        public bool IsDefault { get; set; }
-
-        public DateTime DateCreated { get; set; }
-
-        public int SortOrder { get; set; }
-
-        public long FileSize { get; set; }
-
         [ForeignKey("BookId")]
         public Book Book { get; set; }
     }

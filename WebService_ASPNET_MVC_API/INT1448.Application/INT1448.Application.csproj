@@ -72,7 +72,8 @@
     <Compile Include="Infrastructure\DTOs\BookImageDTO.cs" />
     <Compile Include="Infrastructure\DTOs\PublisherDTO.cs" />
     <Compile Include="Infrastructure\Exeptions\INT1448Exception.cs" />
-    <Compile Include="Infrastructure\Requests\BookRequestUpdate.cs" />
+    <Compile Include="Infrastructure\RequestTypes\BookCreateRequest.cs" />
+    <Compile Include="Infrastructure\RequestTypes\BookUpdateRequest.cs" />
     <Compile Include="Infrastructure\ViewModels\BookViewModel.cs" />
     <Compile Include="IServices\IBookImageManagerService.cs" />
     <Compile Include="IServices\IBookService.cs" />
@@ -89,10 +90,6 @@
     <Compile Include="Services\BookService.cs" />
     <Compile Include="Services\ConvertToViewModel.cs" />
     <Compile Include="Services\PublisherService.cs" />
-    <Compile Include="Storage\FileStorageService.cs" />
-    <Compile Include="Storage\IManageBookImageService.cs" />
-    <Compile Include="Storage\IStorageService.cs" />
-    <Compile Include="Storage\ManageBookImageService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

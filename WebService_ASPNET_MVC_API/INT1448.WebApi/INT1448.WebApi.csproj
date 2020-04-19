@@ -146,7 +146,6 @@
     <Compile Include="Controllers\BookAuthorController.cs" />
     <Compile Include="Controllers\BookCategoryController.cs" />
     <Compile Include="Controllers\BookController.cs" />
-    <Compile Include="Controllers\ImageManagerController.cs" />
     <Compile Include="Controllers\PublisherController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

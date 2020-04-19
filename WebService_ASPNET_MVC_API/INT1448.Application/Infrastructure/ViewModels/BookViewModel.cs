@@ -19,7 +19,7 @@ namespace INT1448.Application.Infrastructure.ViewModels
         public string BookCategoryName { set; get; }
 
         public string PublisherName { get; set; }
-
-        public IEnumerable<BookImageDTO> BookImages { get; set; }
+        
+        public IEnumerable<string> Images { get; set; }
     }
 }
