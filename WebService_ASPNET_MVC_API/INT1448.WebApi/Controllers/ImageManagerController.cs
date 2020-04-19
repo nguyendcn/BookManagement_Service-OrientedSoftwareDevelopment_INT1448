@@ -4,15 +4,20 @@ using INT1448.Application.Storage;
 using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Linq;
 
 namespace INT1448.WebApi.Controllers
 {
-    [RoutePrefix("api/imagemanagers")]
+    [RoutePrefix("images")]
     public class ImageManagerController : ApiController
     {
         private IStorageService _storageService;
@@ -23,6 +28,32 @@ namespace INT1448.WebApi.Controllers
             _storageService = storageService;
             _bookImageManagerService = bookImageManagerService;
         }
+
+        [Route("bookimage/{*filename}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetImage(string fileName)
+        {
+            IEnumerable<BookImageDTO> bookImages = await _bookImageManagerService.GetAll();
+
+            IEnumerable<BookImageDTO> bookMatch =  bookImages.Where(x => 
+                             (x.ImagePath.Substring(x.ImagePath.LastIndexOf("/") + 1).Equals(fileName))
+                             );
+            if (bookMatch.Count() == 0)
+            {
+                return this.Request.CreateResponse(HttpStatusCode.BadRequest, new string[] { "Success: false", "Message: Can not find your file!" });
+            }
+
+            HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
+
+            string rootPath = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/user-content");
+            string filePath = Path.Combine(rootPath, "book-images", fileName);
+
+            response.Content = new StreamContent(new FileStream($"{filePath}", FileMode.Open)); // this file stream will be closed by lower layers of web api for you once the response is completed.
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+
+            return response;
+        }
+
 
         [HttpPost]
         [ImageFilterAttribute]

@@ -15,6 +15,12 @@ namespace INT1448.WebApi
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
+                name: "ImageApi",
+                routeTemplate: "images/{controller}/{action}/{*filename}",
+                defaults: new {filename = RouteParameter.Optional}
+            );
+
+            config.Routes.MapHttpRoute(
                 name: "ActionApi",
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }

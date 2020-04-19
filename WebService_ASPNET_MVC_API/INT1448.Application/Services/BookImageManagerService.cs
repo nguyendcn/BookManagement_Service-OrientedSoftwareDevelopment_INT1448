@@ -8,6 +8,7 @@ using INT1448.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -75,12 +76,16 @@ namespace INT1448.Application.Services
         {
             Func<Task<IEnumerable<BookImageDTO>>> GetAllAsync = async () => {
 
-                IEnumerable<BookImage> authorFound = await _bookImageManagerRepository.GetAllAsync();
+                IEnumerable<BookImage> bookImages = await _bookImageManagerRepository.GetAllAsync();
 
-                IEnumerable<BookImageDTO> authorDTOs = authorFound.ForEach<BookImage, BookImageDTO>((item) => {
-                    return _mapper.Map<BookImage, BookImageDTO>(item);
-                });
-                return authorDTOs;
+                IList<BookImageDTO> bookDTOs = new List<BookImageDTO>();
+
+                foreach(BookImage bookImage in bookImages)
+                {
+                    bookDTOs.Add(_mapper.Map<BookImageDTO>(bookImage));
+                }
+
+                return bookDTOs ;
             };
 
             return await Task.Run(GetAllAsync);
@@ -102,6 +107,12 @@ namespace INT1448.Application.Services
             };
 
             return await Task.Run(GetAllAsync);
+        }
+
+        public async Task<BookImageDTO> GetByCondition(Expression<Func<BookImage, bool>> expression)
+        {
+            BookImage bookImage = await _bookImageManagerRepository.GetSingleByConditionAsync(expression);
+            return _mapper.Map<BookImageDTO>(bookImage);
         }
 
         public async Task<BookImageDTO> GetById(int id)

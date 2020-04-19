@@ -1,7 +1,9 @@
 ﻿using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +22,8 @@ namespace INT1448.Application.IServices
         Task<BookImageDTO> GetById(int id);
 
         Task<IEnumerable<BookImageDTO>> GetAll();
+
+        Task<BookImageDTO> GetByCondition(Expression<Func<BookImage, bool>> expression);
 
         Task<IEnumerable<BookImageDTO>> GetAllByBookId(int bookId);
 
