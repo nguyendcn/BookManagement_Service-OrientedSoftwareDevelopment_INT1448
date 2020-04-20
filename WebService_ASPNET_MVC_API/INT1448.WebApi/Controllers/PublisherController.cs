@@ -70,29 +70,6 @@ namespace INT1448.WebApi.Controllers
             return await CreateHttpResponseAsync(request, HandleRequest);
         }
 
-        [Route("getallpublisherbook/{id:int}")]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetAllPublisherBook(int id)
-        {
-            HttpRequestMessage request = this.Request;
-            Func<Task<HttpResponseMessage>> HandleRequest = async () =>
-            {
-                HttpResponseMessage response = null;
-                if (!ModelState.IsValid)
-                {
-                    response = request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
-                }
-                else
-                {
-                    IEnumerable<PublisherDTO> publishers = await _publisherService.GetAll();
-                    response = request.CreateResponse(HttpStatusCode.OK, publishers);
-                }
-                return response;
-            };
-
-            return await CreateHttpResponseAsync(request, HandleRequest);
-        }
-
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
