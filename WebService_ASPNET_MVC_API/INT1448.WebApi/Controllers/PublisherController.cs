@@ -108,7 +108,7 @@ namespace INT1448.WebApi.Controllers
                 await _publisherService.Update(publisherDto);
                 await _publisherService.SaveToDb();
 
-                response = request.CreateResponse(HttpStatusCode.OK, dbPublisher);
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update publisher successed."));
 
                 return response;
             };
@@ -128,7 +128,8 @@ namespace INT1448.WebApi.Controllers
 
                 PublisherDTO publisherAdded = await _publisherService.Add(publisherDto);
                 await _publisherService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, publisherAdded);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Create publisher successed."));
                 return response;
             };
 
@@ -149,8 +150,8 @@ namespace INT1448.WebApi.Controllers
                 PublisherDTO publisherDeleted = await _publisherService.Delete(id);
 
                 await _publisherService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, publisherDeleted);
 
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Delete publisher successed."));
                 return response;
             };
 

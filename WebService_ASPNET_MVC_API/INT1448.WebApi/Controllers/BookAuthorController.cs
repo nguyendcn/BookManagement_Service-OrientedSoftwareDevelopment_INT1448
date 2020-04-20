@@ -2,6 +2,7 @@
 using INT1448.Application.Infrastructure.DTOs;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
+using INT1448.Shared.CommonType;
 using INT1448.Shared.Filters;
 using System;
 using System.Collections.Generic;
@@ -78,7 +79,7 @@ namespace INT1448.WebApi.Controllers
                 await _bookAuthorService.Update(bookAuthorDto);
                 await _bookAuthorService.SaveToDb();
 
-                response = request.CreateResponse(HttpStatusCode.OK, dbBookAuhtor);
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update BookAuthor successed."));
 
                 return response;
             };
@@ -98,7 +99,8 @@ namespace INT1448.WebApi.Controllers
 
                 BookAuthorDTO bookAuthorAdded = await _bookAuthorService.Add(bookAuthorDto);
                 await _bookAuthorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookAuthorAdded);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Create BookAuthor successed."));
                 return response;
             };
 
@@ -119,7 +121,8 @@ namespace INT1448.WebApi.Controllers
                 BookAuthorDTO bookAuthorDeleted = await _bookAuthorService.Delete(bookId, authorId);
 
                 await _bookAuthorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookAuthorDeleted);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Delete BookAuthor successed."));
 
                 return response;
             };

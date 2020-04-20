@@ -1,4 +1,5 @@
-﻿using INT1448.Shared.Exceptions;
+﻿using INT1448.Shared.CommonType;
+using INT1448.Shared.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
@@ -42,12 +43,12 @@ namespace INT1448.Application.Infrastructure.Core
                         }
                     }
                     LogError(ex);
-                    response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException.Message);
+                    response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, new NotificationResponse("false", ex.InnerException.Message));
                 }
                 catch (DbUpdateException dbEx)
                 {
                     LogError(dbEx);
-                    response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, dbEx.InnerException.Message);
+                    response = requestMessage.CreateResponse(HttpStatusCode.BadRequest, new NotificationResponse("false", dbEx.InnerException.Message));
                 }
                 catch(Exception ex)
                 {
@@ -55,10 +56,10 @@ namespace INT1448.Application.Infrastructure.Core
                     {
                         INT1448Exception appEx = (ex as INT1448Exception);
                         LogError(appEx);
-                        response = requestMessage.CreateErrorResponse((HttpStatusCode)appEx.StatusCode, appEx.Message);
+                        response = requestMessage.CreateResponse((HttpStatusCode)appEx.StatusCode, new NotificationResponse("false", appEx.Message));
                     }
                     LogError(ex);
-                    response = requestMessage.CreateErrorResponse(HttpStatusCode.NotFound, ex.InnerException.Message);
+                    response = requestMessage.CreateResponse(HttpStatusCode.NotFound, new NotificationResponse("false", ex.InnerException.Message));
                 }
                 return response;
             };

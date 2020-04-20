@@ -108,7 +108,7 @@ namespace INT1448.WebApi.Controllers
                 await _bookCategoryService.Update(bookCategoryDto);
                 await _bookCategoryService.SaveToDb();
 
-                response = request.CreateResponse(HttpStatusCode.OK, dbBookCategory);
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update Category successed."));
 
                 return response;
             };
@@ -128,7 +128,8 @@ namespace INT1448.WebApi.Controllers
 
                 BookCategoryDTO bookCategoryDtoAdded = await _bookCategoryService.Add(bookCategoryDto);
                 await _bookCategoryService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDtoAdded);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Create category successed."));
                 return response;
             };
 
@@ -149,7 +150,8 @@ namespace INT1448.WebApi.Controllers
                 BookCategoryDTO bookCategoryDtoDeleted = await _bookCategoryService.Delete(id);
 
                 await _bookCategoryService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, bookCategoryDtoDeleted);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Delete category successed."));
 
                 return response;
             };

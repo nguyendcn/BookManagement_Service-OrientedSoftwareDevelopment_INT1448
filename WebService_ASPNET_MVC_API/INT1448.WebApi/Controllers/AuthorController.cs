@@ -112,7 +112,7 @@ namespace INT1448.WebApi.Controllers
                 await _authorService.Update(authorDto);
                 await _authorService.SaveToDb();
 
-                response = request.CreateResponse(HttpStatusCode.OK, dbAuthor);
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update Author successed."));
 
                 return response;
             };
@@ -132,7 +132,8 @@ namespace INT1448.WebApi.Controllers
 
                 AuthorDTO authorAdded = await _authorService.Add(authorDto);
                 await _authorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, authorAdded);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Create Author successed."));
                 return response;
             };
 
@@ -153,7 +154,8 @@ namespace INT1448.WebApi.Controllers
                 AuthorDTO authorDeleted = await _authorService.Delete(id);
 
                 await _authorService.SaveToDb();
-                response = request.CreateResponse(HttpStatusCode.OK, authorDeleted);
+
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Delete Author successed."));
 
                 return response;
             };

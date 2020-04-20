@@ -262,8 +262,7 @@ namespace INT1448.WebApi.Controllers
                 await _bookImageManagerService.SaveToDb();
                 await _bookService.SaveToDb();
 
-                response = request.CreateResponse(HttpStatusCode.OK, bookDtoDeleted);
-
+                response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Delete book successed."));
                 return response;
             };
 
