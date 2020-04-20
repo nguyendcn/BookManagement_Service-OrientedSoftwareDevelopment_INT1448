@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INT1448.Application.Infrastructure.DTOs
 {
@@ -21,5 +18,7 @@ namespace INT1448.Application.Infrastructure.DTOs
         public int CategoryID { set; get; }
 
         public int PublisherID { get; set; }
+
+        public IEnumerable<BookImageDTO> BookImages { get; set; }
     }
 }

@@ -114,17 +114,17 @@ namespace INT1448.WebApi.Controllers
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
-                BookViewModel bookDto = null;
+                BookViewModel bookVM = null;
 
-                bookDto = await _bookService.GetByIdToView(id);
+                bookVM = await _bookService.GetByIdToView(id);
 
-                if (bookDto == null)
+                if (bookVM == null)
                 {
                     var message = new NotificationResponse("true", "Not found.");
                     response = request.CreateResponse(HttpStatusCode.NotFound, message, JsonMediaTypeFormatter.DefaultMediaType);
                     return response;
                 }
-                response = request.CreateResponse(HttpStatusCode.OK, bookDto);
+                response = request.CreateResponse(HttpStatusCode.OK, bookVM);
                 return response;
             };
 
@@ -162,7 +162,8 @@ namespace INT1448.WebApi.Controllers
 
                 if(joinCount == srcCount && joinCount == dbCount) //not changed
                 {
-                    
+                    response = this.Request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update book successed."));
+                    return response;
                 }
                 else if(joinCount < srcCount && joinCount == dbCount) //insert
                 {
@@ -201,10 +202,11 @@ namespace INT1448.WebApi.Controllers
                 }
                 else
                 {
-
+                    response = this.Request.CreateResponse(HttpStatusCode.BadRequest, new NotificationResponse("false", "Dose not support this request."));
+                    return response;
                 }
 
-                response = this.Request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("tre", "Update book successed."));
+                response = this.Request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update book successed."));
                 return response;
             };
 

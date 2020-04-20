@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using AutoMapper;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.RequestTypes;
 using INT1448.Application.Infrastructure.ViewModels;
 using INT1448.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace INT1448.WebApi.AutoMapper
 {
@@ -20,15 +22,17 @@ namespace INT1448.WebApi.AutoMapper
             CreateMap<Publisher, PublisherDTO>();
             CreateMap<PublisherDTO, Publisher>();
             CreateMap<Book, BookDTO>();
-            CreateMap<BookDTO, Book>();
+            CreateMap<BookDTO, Book>().ForMember(x=>x.BookImages, opt => opt.Ignore());
             CreateMap<BookAuthor, BookAuthorDTO>();
             CreateMap<BookAuthorDTO, BookAuthor>();
             CreateMap<BookImage, BookImageDTO>();
             CreateMap<BookImageDTO, BookImage>();
 
-            CreateMap<Book, BookViewModel>().ForMember(x=>x.Images, opt => opt.MapFrom(x => x.BookImages));
+            CreateMap<Book, BookViewModel>()
+                .ForMember(mb => mb.Images, opt => opt.MapFrom(so => so.BookImages.Select(x=>x.ImagePath).ToList()));
 
-            CreateMap<BookRequestUpdate, BookDTO>();
+            CreateMap<BookCreateRequest, BookDTO>().ForMember(x=>x.BookImages, opt=>opt.Ignore());
+            CreateMap<BookUpdateRequest, BookDTO>().ForMember(x=>x.BookImages, opt=>opt.Ignore());
         }
     }
 
