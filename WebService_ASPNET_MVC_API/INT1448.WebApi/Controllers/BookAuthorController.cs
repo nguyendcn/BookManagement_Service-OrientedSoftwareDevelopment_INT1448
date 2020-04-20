@@ -27,8 +27,9 @@ namespace INT1448.WebApi.Controllers
         [HttpGet]
         [ValidateModelAttribute]
         [IDFilterAttribute]
-        public async Task<HttpResponseMessage> GetAllByAuthorId(int id, HttpRequestMessage requestMessage = null)
+        public async Task<HttpResponseMessage> GetAllByAuthorId(int id)
         {
+            HttpRequestMessage requestMessage = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
@@ -46,8 +47,9 @@ namespace INT1448.WebApi.Controllers
         [HttpGet]
         [ValidateModelAttribute]
         [IDFilterAttribute]
-        public async Task<HttpResponseMessage> GetAllByBookId(int id, HttpRequestMessage requestMessage = null)
+        public async Task<HttpResponseMessage> GetAllByBookId(int id)
         {
+            HttpRequestMessage requestMessage = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
@@ -64,8 +66,9 @@ namespace INT1448.WebApi.Controllers
         [Route("update")]
         [HttpPut]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Update(BookAuthorDTO bookAuthorDto, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Update(BookAuthorDTO bookAuthorDto)
         {
+            HttpRequestMessage request = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
@@ -86,8 +89,9 @@ namespace INT1448.WebApi.Controllers
         [Route("create")]
         [HttpPost]
         [ValidateModelAttribute]
-        public async Task<HttpResponseMessage> Create(BookAuthorDTO bookAuthorDto, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Create(BookAuthorDTO bookAuthorDto)
         {
+            HttpRequestMessage request = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
@@ -105,8 +109,9 @@ namespace INT1448.WebApi.Controllers
         [HttpDelete]
         [ValidateModelAttribute]
         [IDFilterAttribute]
-        public async Task<HttpResponseMessage> Delete(int bookId, int authorId, HttpRequestMessage request = null)
+        public async Task<HttpResponseMessage> Delete(int bookId, int authorId)
         {
+            HttpRequestMessage request = this.Request;
             Func<Task<HttpResponseMessage>> HandleRequest = async () =>
             {
                 HttpResponseMessage response = null;
