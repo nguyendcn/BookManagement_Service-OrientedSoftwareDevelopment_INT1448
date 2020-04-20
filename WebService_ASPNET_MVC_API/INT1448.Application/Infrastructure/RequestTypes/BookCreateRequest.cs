@@ -21,5 +21,7 @@ namespace INT1448.Application.Infrastructure.RequestTypes
         public int PublisherID { get; set; }
 
         public IEnumerable<string> BookImages { get; set; }
+
+        public IEnumerable<int> BookAuthors { get; set; }
     }
 }

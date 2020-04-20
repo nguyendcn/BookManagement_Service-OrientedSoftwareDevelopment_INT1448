@@ -21,5 +21,7 @@ namespace INT1448.Application.Infrastructure.ViewModels
         public string PublisherName { get; set; }
         
         public IEnumerable<string> Images { get; set; }
+
+        public IEnumerable<string> AuthorNames { get; set; }
     }
 }

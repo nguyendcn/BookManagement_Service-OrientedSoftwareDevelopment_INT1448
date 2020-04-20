@@ -26,14 +26,17 @@ namespace INT1448.WebApi.Controllers
     {
         private IBookService _bookService;
         private IBookImageManagerService _bookImageManagerService;
+        private IBookAuthorService _bookAuthorService;
         private IMapper _mapper;
 
-        public BookController(IBookService bookService, 
+        public BookController(IBookService bookService,
             IBookImageManagerService bookImageManagerService,
+            IBookAuthorService bookAuthorService,
             IMapper mapper)
         {
             this._bookService = bookService;
             this._bookImageManagerService = bookImageManagerService;
+            this._bookAuthorService = bookAuthorService;
             this._mapper = mapper;
         }
 
@@ -148,65 +151,9 @@ namespace INT1448.WebApi.Controllers
                 await _bookService.Update(bookToUpdate);
                 await _bookService.SaveToDb();
 
-                IEnumerable<BookImageDTO> bookImages = await _bookImageManagerService.GetAllByBookId(book.Id);
+                await _bookImageManagerService.Update(book.BookImages, book.Id);
 
-                IEnumerable<string> imagePaths = book.BookImages;
-
-                IEnumerable<string> dbImagePaths = (bookImages).Select(x=>x.ImagePath);
-
-                IEnumerable<string> join = from src in imagePaths
-                                               join db in dbImagePaths
-                                               on src equals db
-                                               select src;
-                int joinCount = join.Count();
-                int srcCount = imagePaths.Count();
-                int dbCount = dbImagePaths.Count();
-
-                if(joinCount == srcCount && joinCount == dbCount) //not changed
-                {
-                    response = this.Request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update book successed."));
-                    return response;
-                }
-                else if(joinCount < srcCount && joinCount == dbCount) //insert
-                {
-                    IEnumerable<string> diffirents = imagePaths.Except(dbImagePaths);
-                    foreach (string filePath in diffirents)
-                    {
-                        await _bookImageManagerService.Add(new BookImageDTO() { BookId = book.Id, ImagePath = filePath});
-                    }
-                }
-                else if(joinCount  == srcCount && joinCount < dbCount) //delete
-                {
-                    IEnumerable<string> diffirents = dbImagePaths.Except(imagePaths);
-                    foreach (string filePath in diffirents)
-                    {
-                        BookImageDTO bookImage = bookImages.Where(x => x.ImagePath == filePath).Single();
-                        await _bookImageManagerService.Delete(bookImage.Id);
-                    }
-                    await _bookImageManagerService.SaveToDb();
-                }
-                else if(joinCount < srcCount && joinCount < dbCount) // insert and delete
-                {
-                    IEnumerable<string> inserted = imagePaths.Except(dbImagePaths);
-                    IEnumerable<string> deleted = dbImagePaths.Except(imagePaths);
-
-                    foreach (string filePath in inserted)
-                    {
-                        await _bookImageManagerService.Add(new BookImageDTO() { BookId = book.Id, ImagePath = filePath });
-                    }
-
-                    foreach (string filePath in deleted)
-                    {
-                        BookImageDTO bookImage = bookImages.Where(x => x.ImagePath == filePath).Single();
-                        await _bookImageManagerService.Delete(bookImage.Id);
-                    }
-                    await _bookImageManagerService.SaveToDb();
-                }
-                else
-                {
-                    response = this.Request.CreateResponse(HttpStatusCode.BadRequest, new NotificationResponse("false", "Dose not support this request."));
-                    return response;
-                }
+                await _bookAuthorService.Update(book.BookAuthors, book.Id);
 
                 response = this.Request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Update book successed."));
                 return response;
@@ -232,9 +179,16 @@ namespace INT1448.WebApi.Controllers
 
                 IEnumerable<string> imagePaths = bookCreate.BookImages;
 
+                IEnumerable<int> bookAuthorIds = bookCreate.BookAuthors;
+
                 foreach(string imagePath in imagePaths)
                 {
                     await _bookImageManagerService.Add(new BookImageDTO { BookId = bookAdded.ID, ImagePath = imagePath });
+                }
+
+                foreach(int id in bookAuthorIds)
+                {
+                    await _bookAuthorService.Add(new BookAuthorDTO { BookID = bookAdded.ID, AuthorID = id });
                 }
 
                 response = request.CreateResponse(HttpStatusCode.OK, new NotificationResponse("true", "Book added to database."));

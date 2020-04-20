@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.Exeptions;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
@@ -136,6 +137,70 @@ namespace INT1448.Application.Services
 
                 BookImage authorUpdate = _mapper.Map<BookImageDTO, BookImage>(bookImageDto);
                 await _bookImageManagerRepository.UpdateAsync(authorUpdate);
+            };
+
+            await Task.Run(UpdateAsync);
+        }
+
+        public async Task Update(IEnumerable<string> imagePaths, int bookId)
+        {
+            Func<Task> UpdateAsync = async () =>
+            {
+                IEnumerable<BookImageDTO> bookImages = await GetAllByBookId(bookId);
+
+                IEnumerable<string> dbImagePaths = (bookImages).Select(x => x.ImagePath);
+
+                IEnumerable<string> join = from src in imagePaths
+                                           join db in dbImagePaths
+                                           on src equals db
+                                           select src;
+                int joinCount = join.Count();
+                int srcCount = imagePaths.Count();
+                int dbCount = dbImagePaths.Count();
+
+                if (joinCount == srcCount && joinCount == dbCount) //not changed
+                {
+                    return;
+                }
+                else if (joinCount < srcCount && joinCount == dbCount) //insert
+                {
+                    IEnumerable<string> diffirents = imagePaths.Except(dbImagePaths);
+                    foreach (string filePath in diffirents)
+                    {
+                        await Add(new BookImageDTO() { BookId = bookId, ImagePath = filePath });
+                    }
+                }
+                else if (joinCount == srcCount && joinCount < dbCount) //delete
+                {
+                    IEnumerable<string> diffirents = dbImagePaths.Except(imagePaths);
+                    foreach (string filePath in diffirents)
+                    {
+                        BookImageDTO bookImage = bookImages.Where(x => x.ImagePath == filePath).Single();
+                        await Delete(bookImage.Id);
+                    }
+                    await SaveToDb();
+                }
+                else if (joinCount < srcCount && joinCount < dbCount) // insert and delete
+                {
+                    IEnumerable<string> inserted = imagePaths.Except(dbImagePaths);
+                    IEnumerable<string> deleted = dbImagePaths.Except(imagePaths);
+
+                    foreach (string filePath in inserted)
+                    {
+                        await Add(new BookImageDTO() { BookId = bookId, ImagePath = filePath });
+                    }
+
+                    foreach (string filePath in deleted)
+                    {
+                        BookImageDTO bookImage = bookImages.Where(x => x.ImagePath == filePath).Single();
+                        await Delete(bookImage.Id);
+                    }
+                    await SaveToDb();
+                }
+                else
+                {
+                    throw new INT1448Exception("Can not update images.");
+                }
             };
 
             await Task.Run(UpdateAsync);

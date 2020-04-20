@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using INT1448.Application.Infrastructure.DTOs;
+using INT1448.Application.Infrastructure.Exeptions;
 using INT1448.Application.IServices;
 using INT1448.Core.Models;
 using INT1448.EntityFramework.EntityFramework.Infrastructure;
@@ -117,6 +118,65 @@ namespace INT1448.Application.Services
             };
 
             await Task.Run(UpdateAsync);
+        }
+
+        public async Task Update(IEnumerable<int> authorIDs, int bookId)
+        {
+            IEnumerable<BookAuthorDTO> bookAuthors = await GetByBookId(bookId);
+
+            IEnumerable<int> dbAuthors = (bookAuthors).Select(x => x.AuthorID);
+
+            IEnumerable<int> join = from src in authorIDs
+                                       join db in dbAuthors
+                                       on src equals db
+                                       select src;
+            int joinCount = join.Count();
+            int srcCount = authorIDs.Count();
+            int dbCount = dbAuthors.Count();
+
+            if (joinCount == srcCount && joinCount == dbCount) //not changed
+            {
+                return;
+            }
+            else if (joinCount < srcCount && joinCount == dbCount) //insert
+            {
+                IEnumerable<int> diffirents = authorIDs.Except(dbAuthors);
+                foreach (int author in diffirents)
+                {
+                    await Add(new BookAuthorDTO() { BookID = bookId, AuthorID = author });
+                }
+            }
+            else if (joinCount == srcCount && joinCount < dbCount) //delete
+            {
+                IEnumerable<int> diffirents = dbAuthors.Except(authorIDs);
+                foreach (int author in diffirents)
+                {
+                    BookAuthorDTO bookAuthor = bookAuthors.Where(x => x.AuthorID == author).Single();
+                    await Delete(bookAuthor.BookID, bookAuthor.AuthorID);
+                }
+                await SaveToDb();
+            }
+            else if (joinCount < srcCount && joinCount < dbCount) // insert and delete
+            {
+                IEnumerable<int> inserted = authorIDs.Except(dbAuthors);
+                IEnumerable<int> deleted = dbAuthors.Except(authorIDs);
+
+                foreach (int author in inserted)
+                {
+                    await Add(new BookAuthorDTO() { BookID = bookId, AuthorID = author });
+                }
+
+                foreach (int author in deleted)
+                {
+                    BookAuthorDTO bookAuthor = bookAuthors.Where(x => x.AuthorID == author).Single();
+                    await Delete(bookAuthor.BookID, bookAuthor.AuthorID);
+                }
+                await SaveToDb();
+            }
+            else
+            {
+                throw new INT1448Exception("Can not update book author.");
+            }
         }
     }
 }

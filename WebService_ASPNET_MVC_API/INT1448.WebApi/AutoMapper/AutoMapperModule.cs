@@ -29,10 +29,16 @@ namespace INT1448.WebApi.AutoMapper
             CreateMap<BookImageDTO, BookImage>();
 
             CreateMap<Book, BookViewModel>()
-                .ForMember(mb => mb.Images, opt => opt.MapFrom(so => so.BookImages.Select(x=>x.ImagePath).ToList()));
+                .ForMember(mb => mb.Images, opt => opt.MapFrom(so => so.BookImages.Select(x => x.ImagePath).ToList()))
+                .ForMember(mb => mb.AuthorNames, opt => opt.MapFrom(so => so.BookAuthors.Select(x => x.Author.FullName).ToList()));
 
-            CreateMap<BookCreateRequest, BookDTO>().ForMember(x=>x.BookImages, opt=>opt.Ignore());
-            CreateMap<BookUpdateRequest, BookDTO>().ForMember(x=>x.BookImages, opt=>opt.Ignore());
+            CreateMap<BookCreateRequest, BookDTO>()
+                .ForMember(x => (x.BookImages), opt => opt.Ignore())
+                .ForMember(x => x.BookAuthors, opt => opt.Ignore());
+
+            CreateMap<BookUpdateRequest, BookDTO>()
+                .ForMember(x=>x.BookImages, opt=>opt.Ignore())
+                .ForMember(x => x.BookAuthors, opt => opt.Ignore());
         }
     }
 

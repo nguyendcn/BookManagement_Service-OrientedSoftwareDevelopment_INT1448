@@ -14,6 +14,8 @@ namespace INT1448.Application.IServices
 
         Task Update(BookAuthorDTO bookAuthorDto);
 
+        Task Update(IEnumerable<int> authorIDs, int bookId);
+
         Task<BookAuthorDTO> Delete(int bookId, int authorId);
 
         Task<BookAuthorDTO> Delete(BookAuthorDTO bookAuthorDto);

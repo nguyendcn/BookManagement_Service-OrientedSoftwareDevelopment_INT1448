@@ -15,6 +15,8 @@ namespace INT1448.Application.IServices
 
         Task Update(BookImageDTO bookImageDto);
 
+        Task Update(IEnumerable<string> imagePaths, int bookId);
+
         Task<BookImageDTO> Delete(int id);
 
         Task<BookImageDTO> Delete(BookImageDTO bookImageDto);
